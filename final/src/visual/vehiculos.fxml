@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controlador.Controlador" spacing="10" style="-fx-padding: 10;">
+    
+    <Label text="Sistema de Gestión de Vehículos" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+    
+    <HBox spacing="10" style="-fx-padding: 5;">
+        <VBox spacing="5">
+            <Label text="Datos del Vehículo"/>
+            <TextField fx:id="txtPatente" promptText="Patente"/>
+            <ComboBox fx:id="cmbMarca" promptText="Marca"/>
+            <ComboBox fx:id="cmbColor" promptText="Color"/>
+            <TextField fx:id="txtFabricacion" promptText="Fabricacion"/>
+            <TextField fx:id="txtPrecio" promptText="Precio"/>
+            <ComboBox fx:id="cmbCondicion" promptText="Condicion"/>
+            <ComboBox fx:id="cmbTipo" promptText="Tipo de Vehículo"/>
+            
+            <!-- Campos específicos por tipo -->
+            <VBox fx:id="panelAuto" visible="false" spacing="5">
+                <TextField fx:id="txtPuertas" promptText="Número de Puertas"/>
+                <ComboBox fx:id="cmbCombustible" promptText="Combustible"/>
+                <CheckBox fx:id="chkAire" text="Aire Acondicionado"/>
+            </VBox>
+            
+            <VBox fx:id="panelCamion" visible="false" spacing="5">
+                <TextField fx:id="txtCarga" promptText="Capacidad de Carga"/>
+                <TextField fx:id="txtEjes" promptText="Número de Ejes"/>
+                <CheckBox fx:id="chkRefri" text="Refrigeración"/>
+            </VBox>
+            
+            <VBox fx:id="panelMoto" visible="false" spacing="5">
+                <TextField fx:id="txtCilindrada" promptText="Cilindrada"/>
+                <CheckBox fx:id="chkMaletero" text="Tiene Maletero"/>
+                <TextField fx:id="txtManillar" promptText="Tipo de Manillar"/>
+            </VBox>
+            
+            <HBox spacing="5">
+                <Button text="Agregar" onAction="#agregarVehiculo"/>
+                <Button text="Actualizar" onAction="#actualizarVehiculo"/>
+                <Button text="Eliminar" onAction="#eliminarVehiculo"/>
+            </HBox>
+        </VBox>
+        
+        <VBox spacing="5" style="-fx-padding: 5;">
+            <Label text="Lista de Vehículos"/>
+            <TableView fx:id="tablaVehiculos" prefHeight="300">
+                <columns>
+                    <TableColumn text="Patente" prefWidth="80"/>
+                    <TableColumn text="Tipo" prefWidth="100"/>
+                    <TableColumn text="Marca" prefWidth="100"/>
+                    <TableColumn text="Color" prefWidth="100"/>
+                    <TableColumn text="Año" prefWidth="60"/>
+                    <TableColumn text="Precio" prefWidth="100"/>
+                    <TableColumn text="Condicion" prefWidth="80"/>
+                </columns>
+            </TableView>
+            
+            <HBox spacing="5">
+                <Button text="Ordenar por Patente" onAction="#ordenarPorPatente"/>
+                <Button text="Ordenar por Precio" onAction="#ordenarPorPrecio"/>
+                <Button text="Ordenar por Año" onAction="#ordenarPorFabricacion"/>
+            </HBox>
+            
+            <HBox spacing="5">
+                <ComboBox fx:id="cmbFiltroCondicion" promptText="Filtrar por Condicion"/>
+                <ComboBox fx:id="cmbFiltroMarca" promptText="Filtrar por Marca"/>
+                <Button text="Aplicar Filtro" onAction="#aplicarFiltro"/>
+                <Button text="Limpiar Filtro" onAction="#limpiarFiltro"/>
+            </HBox>
+            
+            <HBox spacing="5">
+                <Button text="Aplicar Descuento 10%" onAction="#aplicarDescuento"/>
+                <Button text="Exportar a TXT" onAction="#exportarTXT"/>
+                <Button text="Guardar CSV" onAction="#guardarCSV"/>
+                <Button text="Cargar CSV" onAction="#cargarCSV"/>
+            </HBox>
+        </VBox>
+    </HBox>
+    
+</VBox>

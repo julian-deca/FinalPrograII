@@ -1,11 +1,11 @@
 package pkgfinal;
 
 import java.time.LocalDate;
-import modelo.Auto;
-import modelo.Color;
-import modelo.Combustible;
-import modelo.Condicion;
-import modelo.Marca;
+import modelo.entidades.Auto;
+import modelo.entidades.Color;
+import modelo.entidades.Combustible;
+import modelo.entidades.Condicion;
+import modelo.entidades.Marca;
 
 /**
  *
