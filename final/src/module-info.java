@@ -13,4 +13,5 @@ module Final {
     exports visual to javafx.graphics;
     exports controlador to javafx.fxml;
     opens controlador to javafx.fxml;
+    opens modelo.entidades to javafx.base;
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="controlador.ControladorForm" spacing="10" style="-fx-padding: 10;">
+    
+    <Label text="Sistema de Gestión de Vehículos" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+    
+    <HBox spacing="10" style="-fx-padding: 5;">
+        <VBox spacing="5">
+            <Label text="Datos del Vehículo"/>
+            <ComboBox fx:id="cmbTipo" promptText="Tipo de Vehículo"/>
+            
+            <VBox fx:id="panelDatos" visible="false" spacing="5">
+                <TextField fx:id="txtPatente" promptText="Patente"/>
+                <ComboBox fx:id="cmbMarca" promptText="Marca"/>
+                <ComboBox fx:id="cmbColor" promptText="Color"/>
+                <DatePicker fx:id="datePickerFabricacion" promptText="Fabricacion" />
+                <TextField fx:id="txtPrecio" promptText="Precio"/>
+                <ComboBox fx:id="cmbCondicion" promptText="Condicion"/>
+            </VBox>
+            
+       
+            
+            <!-- Campos específicos por tipo -->
+            <VBox fx:id="panelAuto" visible="false" spacing="5">
+                <TextField fx:id="txtPuertas" promptText="Número de Puertas"/>
+                <ComboBox fx:id="cmbCombustible" promptText="Combustible"/>
+                <CheckBox fx:id="chkCaja" text="Caja Automatica"/>
+            </VBox>
+            
+            <VBox fx:id="panelCamion" visible="false" spacing="5">
+                <TextField fx:id="txtCarga" promptText="Capacidad de Carga"/>
+                <TextField fx:id="txtEjes" promptText="Número de Ejes"/>
+                <CheckBox fx:id="chkAcoplado" text="Acoplado"/>
+            </VBox>
+            
+            <VBox fx:id="panelMoto" visible="false" spacing="5">
+                <TextField fx:id="txtCilindrada" promptText="Cilindrada"/>
+                <CheckBox fx:id="chkSidecar" text="Tiene Sidecar"/>
+                <TextField fx:id="txtManillar" promptText="Tipo de Manillar"/>
+            </VBox>
+            
+            <HBox spacing="1" >
+                <Button text="Agregar" onAction="#agregarVehiculo"/>
+                <Button text="Actualizar" onAction="#actualizarVehiculo"/>
+                <Button text="Eliminar" onAction="#eliminarVehiculo"/>
+            </HBox>
+        </VBox>
+        
+    </HBox>
+    
+</VBox>

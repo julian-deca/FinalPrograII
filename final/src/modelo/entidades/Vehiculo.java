@@ -54,6 +54,9 @@ public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
     public Condicion getCondicion() { return condicion; }
     public void setCondicion(Condicion condicion) { this.condicion = condicion; }
     
+    public Color getColor() { return color; }
+    public void setColor(Color color) { this.color = color; }
+    
     @Override
     public int compareTo(Vehiculo otro) {
         return this.patente.compareTo(otro.patente);
@@ -61,7 +64,7 @@ public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
     
     @Override
     public String toString() {
-        return String.format("Patente: %s, Marca: %s, Año de Fabricacion: %d, Precio: $%.2f, Condicion: %s", 
-                           patente, marca, fabricacion.getYear(), precio, condicion);
+        return String.format("Patente: %s, Marca: %s, Fabricacion: %d, Precio: $%.2f, Condicion: %s, Color: %s, Tipo: %s", 
+                           patente, marca, fabricacion.getYear(), precio, condicion, color, obtenerTipo());
     }
 }

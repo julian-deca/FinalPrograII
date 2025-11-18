@@ -5,6 +5,7 @@ package controlador;
  * @author Julian
  */
 
+import java.io.IOException;
 import java.time.LocalDate;
 import modelo.gestion.GestorVehiculos;
 import modelo.entidades.*;
@@ -12,6 +13,7 @@ import modelo.persistencia.PersistenciaCSV;
 import modelo.persistencia.ExportadorTXT;
 import modelo.excepciones.VehiculoNotFoundException;
 import modelo.excepciones.DuplicateVehiculoException;
+import visual.Form;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -19,21 +21,48 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import java.util.List;
 import java.util.function.Predicate;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.DatePicker;
+import javafx.stage.Stage;
+   
 
-public class Controlador {
+public class ControladorPrincipal {
     
-    @FXML private TextField txtPatente, txtFabricacion, txtPrecio, txtPuertas, txtCarga, txtEjes, txtCilindrada, txtManillar;
+    @FXML private TextField txtPatente, txtPrecio, txtPuertas, txtCarga, txtEjes, txtCilindrada;
     @FXML private ComboBox<Marca> cmbMarca, cmbFiltroMarca;
     @FXML private ComboBox<Color> cmbColor;
     @FXML private ComboBox<Condicion> cmbCondicion, cmbFiltroCondicion;
     @FXML private ComboBox<String> cmbTipo;
     @FXML private ComboBox<Combustible> cmbCombustible;
-    @FXML private CheckBox chkAire, chkRefri, chkMaletero;
+    @FXML private CheckBox chkCaja, chkAcoplado, chkSidecar;
     @FXML private TableView<Vehiculo> tablaVehiculos;
     @FXML private VBox panelAuto, panelCamion, panelMoto;
+    @FXML private DatePicker datePickerFabricacion;
     
-    private GestorVehiculos gestor;
+    
+    @FXML
+    private TableColumn<Vehiculo, String> patenteColumn;
+    @FXML
+    private TableColumn<Vehiculo, String> tipoColumn;
+    @FXML
+    private TableColumn<Vehiculo, String> marcaColumn;
+    @FXML
+    private TableColumn<Vehiculo, String> colorColumn;
+    @FXML
+    private TableColumn<Vehiculo, LocalDate> fabricacionColumn;
+    @FXML
+    private TableColumn<Vehiculo, Double> precioColumn;
+    @FXML
+    private TableColumn<Vehiculo, String> condicionColumn;
+    
+    
+    
+    
+    public GestorVehiculos gestor;
     
     public void initialize() {
         gestor = new GestorVehiculos();
@@ -52,19 +81,81 @@ public class Controlador {
             mostrarPanelEspecifico(newVal);
         });
         
+        
+        
+        
+        patenteColumn.setCellValueFactory(new PropertyValueFactory<>("patente"));
+        tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        marcaColumn.setCellValueFactory(new PropertyValueFactory<>("marca"));
+        colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
+        fabricacionColumn.setCellValueFactory(new PropertyValueFactory<>("fabricacion"));
+        precioColumn.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        condicionColumn.setCellValueFactory(new PropertyValueFactory<>("condicion"));
+
+        tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));
+        
+        
+        
+        
+        
         actualizarTabla();
     }
     
+    @FXML
+    private void openNewForm() {
+        try {
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("/visual/vehiculosForm.fxml"));
+             Parent root = loader.load();
+                     System.out.println(root);
+
+            ControladorForm controlador = loader.getController();
+            controlador.setControladorPrincipal(this);
+            Stage newStage = new Stage();
+            newStage.setTitle("New Form");
+            newStage.setScene(new Scene(root, 350, 500)); 
+
+            newStage.show();
+            
+            
+           // Form formVehiculos = new Form("/visual/vehiculosForm.fxml","Formulario",400,300);
+            
+           // formVehiculos.openNewForm();
+            /*
+            System.out.println(getClass().getResource("/visual/vehiculosForm.fxml"));
+            // Load the FXML for the new form
+            Parent root = FXMLLoader.load(getClass().getResource("/visual/vehiculosForm.fxml"));
+
+            // Create a new Stage (window)
+            Stage newStage = new Stage();
+            newStage.setTitle("New Form");
+            newStage.setScene(new Scene(root, 400, 300)); // Set scene with dimensions
+
+            // Show the new stage
+            newStage.show();
+
+            // Optional: Hide the current window if desired
+            // ((Node)(event.getSource())).getScene().getWindow().hide();
+*/
+
+        } catch (IOException e) {
+            System.out.println(e);
+            mostrarAlerta("Error", "Datos inválidos: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
     private void mostrarPanelEspecifico(String tipo) {
+        System.out.println(tipo);
         panelAuto.setVisible(false);
         panelCamion.setVisible(false);
         panelMoto.setVisible(false);
         
+        System.out.println(gestor.listarTodos());
+        if (tipo != null){
         switch (tipo) {
-            case "Auto": panelAuto.setVisible(true); break;
-            case "Camión": panelCamion.setVisible(true); break;
-            case "Moto": panelMoto.setVisible(true); break;
-        }
+            case "Auto" -> panelAuto.setVisible(true);
+            case "Camión" -> panelCamion.setVisible(true);
+            case "Moto" -> panelMoto.setVisible(true);
+        }}
     }
     
     @FXML
@@ -106,9 +197,9 @@ public class Controlador {
         
         try {
             gestor.eliminar(patente);
-            limpiarFormulario();
             actualizarTabla();
             mostrarAlerta("Éxito", "Vehículo eliminado correctamente", Alert.AlertType.INFORMATION);
+            limpiarFormulario();
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -209,54 +300,55 @@ public class Controlador {
         String patente = txtPatente.getText();
         Marca marca = cmbMarca.getValue();
         Color color = cmbColor.getValue();
-        LocalDate fabricacion = LocalDate.parse(txtFabricacion.getText());
+        LocalDate fabricacion = datePickerFabricacion.getValue();
         double precio = Double.parseDouble(txtPrecio.getText());
         Condicion condicion = cmbCondicion.getValue();
         String tipo = cmbTipo.getValue();
         
         switch (tipo) {
-            case "Auto":
+            case "Auto" -> {
                 int puertas = Integer.parseInt(txtPuertas.getText());
                 Combustible combustible = cmbCombustible.getValue();
-                boolean aire = chkAire.isSelected();
+                boolean aire = chkCaja.isSelected();
                 return new Auto(patente, marca, fabricacion, precio,color, condicion, puertas, combustible, aire);
+            }
                 
-            case "Camión":
+            case "Camión" -> {
                 double carga = Double.parseDouble(txtCarga.getText());
                 int ejes = Integer.parseInt(txtEjes.getText());
-                boolean refri = chkRefri.isSelected();
+                boolean refri = chkAcoplado.isSelected();
                 return new Camion(patente, marca, fabricacion, precio,color, condicion, carga, ejes, refri);
+            }
                 
-            case "Moto":
+            case "Moto" -> {
                 int cilindrada = Integer.parseInt(txtCilindrada.getText());
-                boolean maletero = chkMaletero.isSelected();
+                boolean maletero = chkSidecar.isSelected();
                 return new Moto(patente, marca, fabricacion, precio,color, condicion, cilindrada, maletero);
+            }
                 
-            default:
-                throw new IllegalArgumentException("Tipo de vehículo no válido");
+            default -> throw new IllegalArgumentException("Tipo de vehículo no válido");
         }
     }
     
-    private void actualizarTabla() {
+    public void actualizarTabla() {
         tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));
     }
     
     private void limpiarFormulario() {
         txtPatente.clear();
-        txtFabricacion.clear();
+        datePickerFabricacion.setValue(null);
         txtPrecio.clear();
         txtPuertas.clear();
         txtCarga.clear();
         txtEjes.clear();
         txtCilindrada.clear();
-        txtManillar.clear();
         cmbMarca.setValue(null);
         cmbCondicion.setValue(null);
         cmbTipo.setValue(null);
         cmbCombustible.setValue(null);
-        chkAire.setSelected(false);
-        chkRefri.setSelected(false);
-        chkMaletero.setSelected(false);
+        chkCaja.setSelected(false);
+        chkAcoplado.setSelected(false);
+        chkSidecar.setSelected(false);
     }
     
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
