@@ -5,10 +5,12 @@ package controlador;
  * @author Julian
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import modelo.gestion.GestorVehiculos;
 import modelo.entidades.*;
+import modelo.persistencia.PathFinder;
 import modelo.persistencia.PersistenciaCSV;
 import modelo.persistencia.ExportadorTXT;
 import modelo.excepciones.VehiculoNotFoundException;
@@ -32,16 +34,10 @@ import javafx.stage.Stage;
 
 public class ControladorPrincipal {
     
-    @FXML private TextField txtPatente, txtPrecio, txtPuertas, txtCarga, txtEjes, txtCilindrada;
-    @FXML private ComboBox<Marca> cmbMarca, cmbFiltroMarca;
-    @FXML private ComboBox<Color> cmbColor;
-    @FXML private ComboBox<Condicion> cmbCondicion, cmbFiltroCondicion;
-    @FXML private ComboBox<String> cmbTipo;
-    @FXML private ComboBox<Combustible> cmbCombustible;
-    @FXML private CheckBox chkCaja, chkAcoplado, chkSidecar;
+    @FXML private ComboBox<Marca> cmbFiltroMarca;
+    @FXML private ComboBox<Condicion>  cmbFiltroCondicion;
     @FXML private TableView<Vehiculo> tablaVehiculos;
-    @FXML private VBox panelAuto, panelCamion, panelMoto;
-    @FXML private DatePicker datePickerFabricacion;
+
     
     
     @FXML
@@ -60,26 +56,23 @@ public class ControladorPrincipal {
     private TableColumn<Vehiculo, String> condicionColumn;
     
     
-    
+    @FXML private TableView.TableViewSelectionModel<Vehiculo> seleccionTabla;
+
     
     public GestorVehiculos gestor;
+    public Vehiculo vehiculoSeleccionado;
+
     
     public void initialize() {
         gestor = new GestorVehiculos();
         
         // Inicializar comboboxes
-        cmbMarca.setItems(FXCollections.observableArrayList(Marca.values()));
-        cmbColor.setItems(FXCollections.observableArrayList(Color.values()));
-        cmbCondicion.setItems(FXCollections.observableArrayList(Condicion.values()));
+     
         cmbFiltroCondicion.setItems(FXCollections.observableArrayList(Condicion.values()));
         cmbFiltroMarca.setItems(FXCollections.observableArrayList(Marca.values()));
-        cmbCombustible.setItems(FXCollections.observableArrayList(Combustible.values()));
-        cmbTipo.setItems(FXCollections.observableArrayList("Auto", "Camión", "Moto"));
-        
+      
         // Configurar listener para cambio de tipo
-        cmbTipo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            mostrarPanelEspecifico(newVal);
-        });
+      
         
         
         
@@ -94,7 +87,7 @@ public class ControladorPrincipal {
 
         tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));
         
-        
+        seleccionTabla = tablaVehiculos.getSelectionModel();
         
         
         
@@ -102,17 +95,20 @@ public class ControladorPrincipal {
     }
     
     @FXML
-    private void openNewForm() {
+    private void openNewForm(Boolean editar) {
         try {
+            
+            
              FXMLLoader loader = new FXMLLoader(getClass().getResource("/visual/vehiculosForm.fxml"));
              Parent root = loader.load();
                      System.out.println(root);
 
             ControladorForm controlador = loader.getController();
             controlador.setControladorPrincipal(this);
+            controlador.setEditar(editar);
             Stage newStage = new Stage();
             newStage.setTitle("New Form");
-            newStage.setScene(new Scene(root, 350, 500)); 
+            newStage.setScene(new Scene(root, 350, 600)); 
 
             newStage.show();
             
@@ -143,29 +139,16 @@ public class ControladorPrincipal {
         }
     }
     
-    private void mostrarPanelEspecifico(String tipo) {
-        System.out.println(tipo);
-        panelAuto.setVisible(false);
-        panelCamion.setVisible(false);
-        panelMoto.setVisible(false);
-        
-        System.out.println(gestor.listarTodos());
-        if (tipo != null){
-        switch (tipo) {
-            case "Auto" -> panelAuto.setVisible(true);
-            case "Camión" -> panelCamion.setVisible(true);
-            case "Moto" -> panelMoto.setVisible(true);
-        }}
+    @FXML
+    private void openNewForm(){
+    this.openNewForm(false);
     }
     
+   
     @FXML
     private void agregarVehiculo(ActionEvent event) {
         try {
-            Vehiculo vehiculo = crearVehiculoDesdeFormulario();
-            gestor.agregar(vehiculo);
-            limpiarFormulario();
-            actualizarTabla();
-            mostrarAlerta("Éxito", "Vehículo agregado correctamente", Alert.AlertType.INFORMATION);
+            this.openNewForm();
         } catch (DuplicateVehiculoException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
@@ -176,10 +159,13 @@ public class ControladorPrincipal {
     @FXML
     private void actualizarVehiculo(ActionEvent event) {
         try {
-            Vehiculo vehiculo = crearVehiculoDesdeFormulario();
-            gestor.actualizar(vehiculo);
-            actualizarTabla();
-            mostrarAlerta("Éxito", "Vehículo actualizado correctamente", Alert.AlertType.INFORMATION);
+            vehiculoSeleccionado = seleccionTabla.getSelectedItem();
+            System.out.println(vehiculoSeleccionado.getTipo());
+            this.openNewForm(true);
+           // Vehiculo vehiculo = crearVehiculoDesdeFormulario();
+           // gestor.actualizar(vehiculo);
+            //actualizarTabla();
+            //mostrarAlerta("Éxito", "Vehículo actualizado correctamente", Alert.AlertType.INFORMATION);
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
@@ -189,17 +175,17 @@ public class ControladorPrincipal {
     
     @FXML
     private void eliminarVehiculo(ActionEvent event) {
-        String patente = txtPatente.getText();
-        if (patente.isEmpty()) {
-            mostrarAlerta("Error", "Ingrese una patente para eliminar", Alert.AlertType.ERROR);
-            return;
-        }
-        
-        try {
-            gestor.eliminar(patente);
-            actualizarTabla();
-            mostrarAlerta("Éxito", "Vehículo eliminado correctamente", Alert.AlertType.INFORMATION);
-            limpiarFormulario();
+
+            try{
+                vehiculoSeleccionado = seleccionTabla.getSelectedItem();
+                if (vehiculoSeleccionado == null) {
+                    mostrarAlerta("Error", "Selceccione un vehiculo para eliminar", Alert.AlertType.ERROR);
+                    return;
+                }
+                String patente = vehiculoSeleccionado.getPatente();
+                gestor.eliminar(patente);
+                actualizarTabla();
+                mostrarAlerta("Éxito", "Vehículo eliminado correctamente", Alert.AlertType.INFORMATION);
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -269,11 +255,38 @@ public class ControladorPrincipal {
     }
     
     @FXML
-    private void guardarCSV(ActionEvent event) {
+    private void guardar(ActionEvent event){
         try {
-            PersistenciaCSV persistencia = new PersistenciaCSV();
-            persistencia.guardar(gestor.listarTodos(), "vehiculos.csv");
-            mostrarAlerta("Éxito", "Datos guardados en vehiculos.csv", Alert.AlertType.INFORMATION);
+                PathFinder pathFinder = new PathFinder();
+                File file = pathFinder.obtenerPathGuardar(event, "hola");
+                if(file != null){
+                    String extension = PathFinder.getExtension(file);
+                    if(extension != null && !extension.isEmpty()){
+                        
+                        switch (extension) {
+                        case "json" -> guardarCSV(file);
+                        case "csv" ->guardarCSV(file);
+                        default -> mostrarAlerta("Error", "Formato de Archivo Invalido", Alert.AlertType.ERROR);
+                        }
+                    }
+                        
+                }
+                   
+                }
+           
+           
+         catch (Exception e) {
+            mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+    @FXML
+    private void guardarCSV(File file) {
+        try {
+                PersistenciaCSV persistencia = new PersistenciaCSV();
+                persistencia.guardar(gestor.listarTodos(), file.getAbsolutePath());
+                mostrarAlerta("Éxito", "Datos guardados en " + file.getName(), Alert.AlertType.INFORMATION);
+           
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -282,76 +295,32 @@ public class ControladorPrincipal {
     @FXML
     private void cargarCSV(ActionEvent event) {
         try {
-            PersistenciaCSV persistencia = new PersistenciaCSV();
-            List<Vehiculo> vehiculosCargados = persistencia.cargar("vehiculos.csv");
-            // Limpiar y cargar nuevos datos
-            gestor = new GestorVehiculos();
-            for (Vehiculo v : vehiculosCargados) {
-                gestor.agregar(v);
+            PathFinder pathFinder = new PathFinder();
+            File file = pathFinder.obtenerPathCargar(event, "hola");
+            if(file != null){
+                PersistenciaCSV persistencia = new PersistenciaCSV();
+                List<Vehiculo> vehiculosCargados = persistencia.cargar(file.getAbsolutePath());
+                gestor = new GestorVehiculos();
+                for (Vehiculo v : vehiculosCargados) {
+                    gestor.agregar(v);
+                }
+                actualizarTabla();
+                mostrarAlerta("Éxito", "Datos cargados desde vehiculos.csv", Alert.AlertType.INFORMATION);
             }
-            actualizarTabla();
-            mostrarAlerta("Éxito", "Datos cargados desde vehiculos.csv", Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al cargar: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
-    private Vehiculo crearVehiculoDesdeFormulario() {
-        String patente = txtPatente.getText();
-        Marca marca = cmbMarca.getValue();
-        Color color = cmbColor.getValue();
-        LocalDate fabricacion = datePickerFabricacion.getValue();
-        double precio = Double.parseDouble(txtPrecio.getText());
-        Condicion condicion = cmbCondicion.getValue();
-        String tipo = cmbTipo.getValue();
-        
-        switch (tipo) {
-            case "Auto" -> {
-                int puertas = Integer.parseInt(txtPuertas.getText());
-                Combustible combustible = cmbCombustible.getValue();
-                boolean aire = chkCaja.isSelected();
-                return new Auto(patente, marca, fabricacion, precio,color, condicion, puertas, combustible, aire);
-            }
-                
-            case "Camión" -> {
-                double carga = Double.parseDouble(txtCarga.getText());
-                int ejes = Integer.parseInt(txtEjes.getText());
-                boolean refri = chkAcoplado.isSelected();
-                return new Camion(patente, marca, fabricacion, precio,color, condicion, carga, ejes, refri);
-            }
-                
-            case "Moto" -> {
-                int cilindrada = Integer.parseInt(txtCilindrada.getText());
-                boolean maletero = chkSidecar.isSelected();
-                return new Moto(patente, marca, fabricacion, precio,color, condicion, cilindrada, maletero);
-            }
-                
-            default -> throw new IllegalArgumentException("Tipo de vehículo no válido");
-        }
-    }
+
     
     public void actualizarTabla() {
         tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));
     }
     
-    private void limpiarFormulario() {
-        txtPatente.clear();
-        datePickerFabricacion.setValue(null);
-        txtPrecio.clear();
-        txtPuertas.clear();
-        txtCarga.clear();
-        txtEjes.clear();
-        txtCilindrada.clear();
-        cmbMarca.setValue(null);
-        cmbCondicion.setValue(null);
-        cmbTipo.setValue(null);
-        cmbCombustible.setValue(null);
-        chkCaja.setSelected(false);
-        chkAcoplado.setSelected(false);
-        chkSidecar.setSelected(false);
-    }
+  
     
-    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
+    public void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle(titulo);
         alert.setHeaderText(null);

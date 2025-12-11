@@ -19,9 +19,11 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import java.util.List;
 import java.util.function.Predicate;
+import javafx.scene.Node;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.DatePicker;
+import javafx.stage.Stage;
 
 public class ControladorForm {
     
@@ -29,15 +31,18 @@ public class ControladorForm {
     @FXML private ComboBox<Marca> cmbMarca;
     @FXML private ComboBox<Color> cmbColor;
     @FXML private ComboBox<Condicion> cmbCondicion;
-    @FXML private ComboBox<String> cmbTipo;
+    @FXML private ComboBox<Tipo> cmbTipo;
     @FXML private ComboBox<Combustible> cmbCombustible;
     @FXML private CheckBox chkCaja, chkAcoplado, chkSidecar;
     @FXML private VBox panelAuto, panelCamion, panelMoto,panelDatos;
     @FXML private DatePicker datePickerFabricacion;
     
+    @FXML private Button btnCrear,btnActualizar;
+
+    
     
     private ControladorPrincipal controladorPrincipal;
-
+    
     
     
     
@@ -49,7 +54,7 @@ public class ControladorForm {
         cmbColor.setItems(FXCollections.observableArrayList(Color.values()));
         cmbCondicion.setItems(FXCollections.observableArrayList(Condicion.values()));
         cmbCombustible.setItems(FXCollections.observableArrayList(Combustible.values()));
-        cmbTipo.setItems(FXCollections.observableArrayList("Auto", "Camión", "Moto"));
+        cmbTipo.setItems(FXCollections.observableArrayList(Tipo.values()));
         
         // Configurar listener para cambio de tipo
         cmbTipo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -62,20 +67,37 @@ public class ControladorForm {
         this.controladorPrincipal = controladorPrincipal;
     }
     
-    private void mostrarPanelEspecifico(String tipo) {
-        System.out.println(tipo);
-        panelAuto.setVisible(false);
-        panelCamion.setVisible(false);
-        panelMoto.setVisible(false);
-        panelDatos.setVisible(false);
-        
+    public void setEditar(Boolean editar){
+        if(editar){
+            this.mapearParaEdicion();
+            btnActualizar.setVisible(true);
+            btnActualizar.setManaged(true);
+            btnCrear.setVisible(false);
+            btnCrear.setManaged(false);
+            txtPatente.setDisable(true);
+        }
+    }
+    
+    private void showPanel(VBox panel, Boolean estado){
+        panel.setVisible(estado);
+        panel.setManaged(estado);
+    }
+    
+    private void mostrarPanelEspecifico(Tipo tipo) {
+        showPanel(panelAuto,false);
+        showPanel(panelCamion,false);
+        showPanel(panelMoto,false);
+        showPanel(panelDatos,false);
+
         System.out.println(this.controladorPrincipal.gestor.listarTodos());
         if (tipo != null){
-        panelDatos.setVisible(true);
+        showPanel(panelDatos,true);
+
+
         switch (tipo) {
-            case "Auto" -> panelAuto.setVisible(true);
-            case "Camión" -> panelCamion.setVisible(true);
-            case "Moto" -> panelMoto.setVisible(true);
+            case Tipo.AUTO -> showPanel(panelAuto,true);
+            case Tipo.CAMION ->showPanel(panelCamion,true);
+            case Tipo.MOTO -> showPanel(panelMoto,true);
         }}
     }
     
@@ -86,7 +108,9 @@ public class ControladorForm {
             this.controladorPrincipal.gestor.agregar(vehiculo);
             limpiarFormulario();
            actualizarTabla();
+           cerrarForm(event);
             mostrarAlerta("Éxito", "Vehículo agregado correctamente", Alert.AlertType.INFORMATION);
+
         } catch (DuplicateVehiculoException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
@@ -100,6 +124,7 @@ public class ControladorForm {
             Vehiculo vehiculo = crearVehiculoDesdeFormulario();
             this.controladorPrincipal.gestor.actualizar(vehiculo);
             actualizarTabla();
+           cerrarForm(event);
             mostrarAlerta("Éxito", "Vehículo actualizado correctamente", Alert.AlertType.INFORMATION);
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
@@ -109,23 +134,10 @@ public class ControladorForm {
     }
     
     @FXML
-    private void eliminarVehiculo(ActionEvent event) {
-        String patente = txtPatente.getText();
-        if (patente.isEmpty()) {
-            mostrarAlerta("Error", "Ingrese una patente para eliminar", Alert.AlertType.ERROR);
-            return;
-        }
-        
-        try {
-            this.controladorPrincipal.gestor.eliminar(patente);
-            actualizarTabla();
-            mostrarAlerta("Éxito", "Vehículo eliminado correctamente", Alert.AlertType.INFORMATION);
-            limpiarFormulario();
-        } catch (VehiculoNotFoundException e) {
-            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
-        }
+    private void cerrarForm(ActionEvent event){
+     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+     stage.close();
     }
-    
    
     private Vehiculo crearVehiculoDesdeFormulario() {
         String patente = txtPatente.getText();
@@ -134,24 +146,24 @@ public class ControladorForm {
         LocalDate fabricacion = datePickerFabricacion.getValue();
         double precio = Double.parseDouble(txtPrecio.getText());
         Condicion condicion = cmbCondicion.getValue();
-        String tipo = cmbTipo.getValue();
+        Tipo tipo = cmbTipo.getValue();
         
         switch (tipo) {
-            case "Auto" -> {
+            case Tipo.AUTO -> {
                 int puertas = Integer.parseInt(txtPuertas.getText());
                 Combustible combustible = cmbCombustible.getValue();
                 boolean aire = chkCaja.isSelected();
                 return new Auto(patente, marca, fabricacion, precio,color, condicion, puertas, combustible, aire);
             }
                 
-            case "Camión" -> {
+            case Tipo.CAMION -> {
                 double carga = Double.parseDouble(txtCarga.getText());
                 int ejes = Integer.parseInt(txtEjes.getText());
                 boolean refri = chkAcoplado.isSelected();
                 return new Camion(patente, marca, fabricacion, precio,color, condicion, carga, ejes, refri);
             }
                 
-            case "Moto" -> {
+            case Tipo.MOTO -> {
                 int cilindrada = Integer.parseInt(txtCilindrada.getText());
                 boolean maletero = chkSidecar.isSelected();
                 return new Moto(patente, marca, fabricacion, precio,color, condicion, cilindrada, maletero);
@@ -163,7 +175,53 @@ public class ControladorForm {
     
     
     private void actualizarTabla() {
+        if(this.controladorPrincipal != null){
         this.controladorPrincipal.actualizarTabla();
+        }
+    }
+    
+    private void mapearParaEdicion(){
+        Vehiculo vehiculoEdicion = controladorPrincipal.vehiculoSeleccionado;
+        
+        txtPatente.setText(vehiculoEdicion.getPatente());
+        cmbMarca.setValue(vehiculoEdicion.getMarca());
+        cmbColor.setValue(vehiculoEdicion.getColor());
+        datePickerFabricacion.setValue(vehiculoEdicion.getFabricacion());
+        txtPrecio.setText(String.valueOf(vehiculoEdicion.getPrecio()));
+        cmbCondicion.setValue(vehiculoEdicion.getCondicion());
+        cmbTipo.setValue(vehiculoEdicion.getTipo());  // assuming Vehiculo has getTipo()
+
+        // Limpio los campos específicos por las dudas
+        txtPuertas.clear();
+        cmbCombustible.setValue(null);
+        chkCaja.setSelected(false);
+
+        txtCarga.clear();
+        txtEjes.clear();
+        chkAcoplado.setSelected(false);
+
+        txtCilindrada.clear();
+        chkSidecar.setSelected(false);
+
+        // Detectar tipo real del vehículo
+        if (vehiculoEdicion instanceof Auto auto) {
+            txtPuertas.setText(String.valueOf(auto.getNumeroPuertas()));
+            cmbCombustible.setValue(auto.getCombustible());
+            chkCaja.setSelected(auto.isTieneCajaAutomatica()); // Ajusta según tu atributo
+        }
+
+        else if (vehiculoEdicion instanceof Camion camion) {
+            txtCarga.setText(String.valueOf(camion.getCapacidadCarga()));
+            txtEjes.setText(String.valueOf(camion.getNumeroEjes()));
+            chkAcoplado.setSelected(camion.isTieneAcoplado());
+        }
+
+        else if (vehiculoEdicion instanceof Moto moto) {
+            txtCilindrada.setText(String.valueOf(moto.getCilindrada()));
+            chkSidecar.setSelected(moto.isTieneSidecar());
+        }
+
+
     }
     
     private void limpiarFormulario() {
@@ -184,10 +242,15 @@ public class ControladorForm {
     }
     
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
+        
+        this.controladorPrincipal.mostrarAlerta(titulo, mensaje, tipo);
+       
+        
+        /*Alert alert = new Alert(tipo);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+*/
     }
 }

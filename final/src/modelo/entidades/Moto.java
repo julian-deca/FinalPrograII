@@ -12,7 +12,7 @@ public class Moto extends Vehiculo {
     
     public Moto(String patente, Marca marca, LocalDate fabricacion, double precio, Color color, Condicion condicion,
                int cilindrada, boolean tieneSidecar) {
-        super(patente, marca, fabricacion, precio, color, condicion);
+        super(patente, marca, fabricacion, precio, color, condicion, Tipo.MOTO);
         this.cilindrada = cilindrada;
         this.tieneSidecar = tieneSidecar;
     }
@@ -31,10 +31,7 @@ public class Moto extends Vehiculo {
         return precio * 0.015;
     }
     
-    @Override
-    public String obtenerTipo() {
-        return "Moto";
-    }
+  
     
     @Override
     public void realizarMantenimiento() {

@@ -42,7 +42,10 @@ public class GestorVehiculos implements CRUD<Vehiculo> {
     
     @Override
     public boolean actualizar(Vehiculo vehiculo) {
-        int index = vehiculos.indexOf(vehiculo);
+        String patente = vehiculo.getPatente();
+        Vehiculo vehiculoOriginal = buscar(patente);
+        
+        int index = vehiculos.indexOf(vehiculoOriginal);
         if (index != -1) {
             vehiculos.set(index, vehiculo);
             return true;

@@ -27,7 +27,7 @@ public class ExportadorTXT {
                 if (filtro.test(v)) {
                     contador++;
                     writer.println("Vehículo #" + contador);
-                    writer.println("Tipo: " + v.obtenerTipo());
+                    writer.println("Tipo: " + v.getTipo());
                     writer.println("Patente: " + v.getPatente());
                     writer.println("Marca: " + v.getMarca());
                     writer.println("Fabricacion: " + v.getFabricacion());

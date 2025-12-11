@@ -13,34 +13,8 @@
     <HBox spacing="10" style="-fx-padding: 5;">
         <VBox spacing="5">
             <Label text="Datos del Vehículo"/>
-            <Button text="Open New Form" onAction="#openNewForm"/>
-            <TextField fx:id="txtPatente" promptText="Patente"/>
-            <ComboBox fx:id="cmbMarca" promptText="Marca"/>
-            <ComboBox fx:id="cmbColor" promptText="Color"/>
+          
             
-            <DatePicker fx:id="datePickerFabricacion" promptText="Fabricacion" />
-            <TextField fx:id="txtPrecio" promptText="Precio"/>
-            <ComboBox fx:id="cmbCondicion" promptText="Condicion"/>
-            <ComboBox fx:id="cmbTipo" promptText="Tipo de Vehículo"/>
-            
-            <!-- Campos específicos por tipo -->
-            <VBox fx:id="panelAuto" visible="false" spacing="5">
-                <TextField fx:id="txtPuertas" promptText="Número de Puertas"/>
-                <ComboBox fx:id="cmbCombustible" promptText="Combustible"/>
-                <CheckBox fx:id="chkCaja" text="Caja Automatica"/>
-            </VBox>
-            
-            <VBox fx:id="panelCamion" visible="false" spacing="5">
-                <TextField fx:id="txtCarga" promptText="Capacidad de Carga"/>
-                <TextField fx:id="txtEjes" promptText="Número de Ejes"/>
-                <CheckBox fx:id="chkAcoplado" text="Acoplado"/>
-            </VBox>
-            
-            <VBox fx:id="panelMoto" visible="false" spacing="5">
-                <TextField fx:id="txtCilindrada" promptText="Cilindrada"/>
-                <CheckBox fx:id="chkSidecar" text="Tiene Sidecar"/>
-                <TextField fx:id="txtManillar" promptText="Tipo de Manillar"/>
-            </VBox>
             
             <HBox spacing="5">
                 <Button text="Agregar" onAction="#agregarVehiculo"/>
@@ -79,7 +53,7 @@
             <HBox spacing="5">
                 <Button text="Aplicar Descuento 10%" onAction="#aplicarDescuento"/>
                 <Button text="Exportar a TXT" onAction="#exportarTXT"/>
-                <Button text="Guardar CSV" onAction="#guardarCSV"/>
+                <Button text="Guardar" onAction="#guardar"/>
                 <Button text="Cargar CSV" onAction="#cargarCSV"/>
             </HBox>
         </VBox>

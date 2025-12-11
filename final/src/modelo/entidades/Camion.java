@@ -13,7 +13,7 @@ public class Camion extends Vehiculo implements VehiculoCarga {
     
     public Camion(String patente, Marca marca, LocalDate fabricacion, double precio, Color color, Condicion condicion,
                  double capacidadCarga, int numeroEjes, boolean tieneAcoplado) {
-        super(patente, marca, fabricacion, precio, color, condicion);
+        super(patente, marca, fabricacion, precio, color, condicion,Tipo.CAMION);
         this.capacidadCarga = capacidadCarga;
         this.numeroEjes = numeroEjes;
         this.tieneAcoplado = tieneAcoplado;
@@ -33,11 +33,7 @@ public class Camion extends Vehiculo implements VehiculoCarga {
         return precio * 0.05 + capacidadCarga * 10;
     }
     
-    @Override
-    public String obtenerTipo() {
-        return "Camión";
-    }
-    
+
     @Override
     public void realizarMantenimiento() {
         System.out.println("Realizando mantenimiento de camión: revisión de frenos y suspensión");

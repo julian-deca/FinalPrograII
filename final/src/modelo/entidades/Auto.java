@@ -14,7 +14,7 @@ public class Auto extends Vehiculo {
     
     public Auto(String patente, Marca marca, LocalDate fabricacion, double precio, Color color, Condicion condicion,
                int numeroPuertas, Combustible combustible, boolean tieneCajaAutomatica) {
-        super(patente, marca, fabricacion, precio, color, condicion);
+        super(patente, marca, fabricacion, precio, color, condicion, Tipo.AUTO);
         this.numeroPuertas = numeroPuertas;
         this.combustible = combustible;
         this.tieneCajaAutomatica = tieneCajaAutomatica;
@@ -36,11 +36,7 @@ public class Auto extends Vehiculo {
         return base;
     }
     
-    @Override
-    public String obtenerTipo() {
-        return "Auto";
-    }
-    
+  
     @Override
     public void realizarMantenimiento() {
         System.out.println("Realizando mantenimiento de auto: cambio de aceite y filtros");

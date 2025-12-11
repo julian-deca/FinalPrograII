@@ -14,28 +14,29 @@ public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
     protected double precio;
     protected Condicion condicion;
     protected Color color;
+    protected Tipo tipo;
     
     // Constructores sobrecargados
-    public Vehiculo(String patente, Marca marca, LocalDate fabricacion,double precio, Color color, Condicion condicion ) {
+    public Vehiculo(String patente, Marca marca, LocalDate fabricacion,double precio, Color color, Condicion condicion, Tipo tipo ) {
         this.patente = patente;
         this.marca = marca;
         this.fabricacion = fabricacion;
         this.precio = precio;
         this.condicion = condicion;
         this.color = color;
+        this.tipo = tipo;
     }
     
-    public Vehiculo(String patente, Marca marca, LocalDate fabricacion, double precio,Color color) {
-        this(patente, marca, fabricacion, precio, color, Condicion.NUEVO);
+    public Vehiculo(String patente, Marca marca, LocalDate fabricacion, double precio,Color color, Tipo tipo) {
+        this(patente, marca, fabricacion, precio, color, Condicion.NUEVO, tipo);
     }
     
-    public Vehiculo(String patente, Marca marca, LocalDate fabricacion,double precio) {
-        this(patente, marca, fabricacion, precio,Color.BLANCO, Condicion.NUEVO);
+    public Vehiculo(String patente, Marca marca, LocalDate fabricacion,double precio, Tipo tipo) {
+        this(patente, marca, fabricacion, precio,Color.BLANCO, Condicion.NUEVO, tipo);
     }
     
     // Métodos abstractos
     public abstract double calcularImpuesto();
-    public abstract String obtenerTipo();
     public abstract void realizarMantenimiento();
     
     // Getters y Setters
@@ -57,6 +58,9 @@ public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color; }
     
+    public Tipo getTipo() {return tipo;}
+
+    
     @Override
     public int compareTo(Vehiculo otro) {
         return this.patente.compareTo(otro.patente);
@@ -65,6 +69,6 @@ public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
     @Override
     public String toString() {
         return String.format("Patente: %s, Marca: %s, Fabricacion: %d, Precio: $%.2f, Condicion: %s, Color: %s, Tipo: %s", 
-                           patente, marca, fabricacion.getYear(), precio, condicion, color, obtenerTipo());
+                           patente, marca, fabricacion.getYear(), precio, condicion, color, tipo);
     }
 }
