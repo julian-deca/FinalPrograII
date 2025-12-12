@@ -215,6 +215,7 @@ public class ControladorPrincipal {
         
         if (cmbFiltroCondicion.getValue() != null) {
             filtro = filtro.and(v -> v.getCondicion() == cmbFiltroCondicion.getValue());
+            System.out.println(cmbFiltroCondicion.getValue());
         }
         
         if (cmbFiltroMarca.getValue() != null) {
@@ -230,10 +231,26 @@ public class ControladorPrincipal {
     
     @FXML
     private void limpiarFiltro(ActionEvent event) {
-        cmbFiltroCondicion.setValue(null);
-        cmbFiltroMarca.setValue(null);
+        resetComboBox(cmbFiltroCondicion);
+        resetComboBox(cmbFiltroMarca);
         actualizarTabla();
     }
+    
+    private <T> void resetComboBox(ComboBox<T> combo) {
+        combo.setValue(null);
+        combo.setButtonCell(new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.toString());
+                }
+            }
+        });
+    }
+    
     
     @FXML
     private void aplicarDescuento(ActionEvent event) {
@@ -316,6 +333,7 @@ public class ControladorPrincipal {
     
     public void actualizarTabla() {
         tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));
+        tablaVehiculos.refresh();
     }
     
   

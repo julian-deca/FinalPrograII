@@ -13,9 +13,6 @@
     <HBox spacing="10" style="-fx-padding: 5;">
         <VBox spacing="5">
             <Label text="Datos del Vehículo"/>
-          
-            
-            
             <HBox spacing="5">
                 <Button text="Agregar" onAction="#agregarVehiculo"/>
                 <Button text="Actualizar" onAction="#actualizarVehiculo"/>
@@ -44,7 +41,7 @@
             </HBox>
             
             <HBox spacing="5">
-                <ComboBox fx:id="cmbFiltroCondicion" promptText="Filtrar por Condicion"/>
+                <ComboBox fx:id="cmbFiltroCondicion" promptText="Filtrar por Condicion" />
                 <ComboBox fx:id="cmbFiltroMarca" promptText="Filtrar por Marca"/>
                 <Button text="Aplicar Filtro" onAction="#aplicarFiltro"/>
                 <Button text="Limpiar Filtro" onAction="#limpiarFiltro"/>
