@@ -36,7 +36,6 @@ public class PersistenciaJSON implements Persistencia {
             Vehiculo v = vehiculos.get(i);
             json.append("  {\n");
             
-            // Atributos comunes
             appendJsonField(json, "tipo", v.getTipo().toString(), true);
             appendJsonField(json, "patente", v.getPatente(), true);
             appendJsonField(json, "marca", v.getMarca().toString(), true);
@@ -45,7 +44,6 @@ public class PersistenciaJSON implements Persistencia {
             appendJsonField(json, "color", v.getColor().toString(), true);
             appendJsonField(json, "condicion", v.getCondicion().toString(), true);
 
-            // Atributos específicos
             switch (v) {
                 case Auto auto -> {
                     appendJsonField(json, "numeroPuertas", String.valueOf(auto.getNumeroPuertas()), false);
@@ -80,7 +78,6 @@ public class PersistenciaJSON implements Persistencia {
         }
     }
 
-    // Métodos auxiliares para no repetir código de formateo
     private void appendJsonField(StringBuilder sb, String key, String value, boolean isString) {
         appendJsonField(sb, key, value, isString, false);
     }
@@ -99,11 +96,10 @@ public class PersistenciaJSON implements Persistencia {
         List<Vehiculo> lista = new ArrayList<>();
         StringBuilder contentBuilder = new StringBuilder();
 
-        // 1. Leer todo el archivo a un String
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String line;
             while ((line = br.readLine()) != null) {
-                contentBuilder.append(line.trim()); // Trim para quitar espacios extra
+                contentBuilder.append(line.trim());
             }
         } catch (IOException e) {
             throw new RuntimeException("Error al leer JSON: " + e.getMessage(), e);
@@ -111,40 +107,27 @@ public class PersistenciaJSON implements Persistencia {
 
         String json = contentBuilder.toString();
         
-        // Validar si está vacío o es solo []
         if (json.length() <= 2) return lista;
 
-        // 2. Quitar los corchetes exteriores []
         json = json.substring(1, json.length() - 1);
 
-        // 3. Separar los objetos. Usamos "},{" como delimitador
-        // Esto asume que no hay objetos anidados complejos, lo cual es cierto para tu modelo.
         String[] objetos = json.split("\\},\\{");
 
         for (String objStr : objetos) {
-            // Limpiar llaves sobrantes del split
             objStr = objStr.replace("{", "").replace("}", "");
             
-            // Mapa temporal para guardar los valores del objeto actual
             java.util.Map<String, String> mapa = new java.util.HashMap<>();
             
-            // 4. Separar por comas para obtener los pares clave:valor
-            // Usamos el split asegurando que la coma no esté dentro de comillas (básico)
             String[] pares = objStr.split(",\""); 
             
             for (String par : pares) {
                 String[] kv = par.split(":");
-                String key = kv[0].replace("\"", "").trim(); // Limpiar comillas de la clave
-                String val = kv[1].replace("\"", "").trim(); // Limpiar comillas del valor
+                String key = kv[0].replace("\"", "").trim(); 
+                String val = kv[1].replace("\"", "").trim(); 
                 
-                // Corrección si el split se comió la comilla inicial del siguiente campo
-                if (!mapa.isEmpty() && !key.isEmpty() && !par.startsWith("\"")) { 
-                   // Lógica simple: en este caso manual asumimos formato correcto generado por 'guardar'
-                }
                 mapa.put(key, val);
             }
-
-            // 5. Reconstruir el objeto
+            System.out.println(mapa);
             try {
                 Tipo tipoEnum = Tipo.valueOf(mapa.get("tipo"));
                 String patente = mapa.get("patente");
@@ -175,7 +158,6 @@ public class PersistenciaJSON implements Persistencia {
                 }
             } catch (Exception e) {
                 System.err.println("Error al parsear objeto: " + e.getMessage());
-                // Continuar con el siguiente o lanzar error según preferencia
             }
         }
         return lista;

@@ -30,6 +30,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import modelo.persistencia.PersistenciaJSON;
+import modelo.persistencia.Serializador;
    
 
 public class ControladorPrincipal {
@@ -90,8 +92,7 @@ public class ControladorPrincipal {
         seleccionTabla = tablaVehiculos.getSelectionModel();
         
         
-        
-        actualizarTabla();
+        deserializar();
     }
     
     @FXML
@@ -272,17 +273,43 @@ public class ControladorPrincipal {
     }
     
     @FXML
-    private void guardar(ActionEvent event){
+    private void importar(ActionEvent event){
         try {
                 PathFinder pathFinder = new PathFinder();
-                File file = pathFinder.obtenerPathGuardar(event, "hola");
+                File file = pathFinder.obtenerPathGuardar(event);
                 if(file != null){
                     String extension = PathFinder.getExtension(file);
                     if(extension != null && !extension.isEmpty()){
                         
                         switch (extension) {
-                        case "json" -> guardarCSV(file);
+                        case "json" -> guardarJSON(file);
                         case "csv" ->guardarCSV(file);
+                        default -> mostrarAlerta("Error", "Formato de Archivo Invalido", Alert.AlertType.ERROR);
+                        }
+                    }
+                        
+                }
+                   
+                }
+           
+           
+         catch (Exception e) {
+            mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+    @FXML
+    private void exportar(ActionEvent event){
+        try {
+                PathFinder pathFinder = new PathFinder();
+                File file = pathFinder.obtenerPathCargar(event);
+                if(file != null){
+                    String extension = PathFinder.getExtension(file);
+                    if(extension != null && !extension.isEmpty()){
+                        
+                        switch (extension) {
+                        case "json" -> cargarJSON(file);
+                        case "csv" ->cargarCSV(file);
                         default -> mostrarAlerta("Error", "Formato de Archivo Invalido", Alert.AlertType.ERROR);
                         }
                     }
@@ -310,26 +337,81 @@ public class ControladorPrincipal {
     }
     
     @FXML
-    private void cargarCSV(ActionEvent event) {
+    private void cargarCSV(File file) {
         try {
-            PathFinder pathFinder = new PathFinder();
-            File file = pathFinder.obtenerPathCargar(event, "hola");
-            if(file != null){
                 PersistenciaCSV persistencia = new PersistenciaCSV();
+                List<Vehiculo> vehiculosCargados = persistencia.cargar(file.getAbsolutePath());
+                gestor = new GestorVehiculos();
+                for (Vehiculo v : vehiculosCargados) {
+                    gestor.agregar(v);
+                                }
+
+                actualizarTabla();
+                mostrarAlerta("Éxito", "Datos cargados desde " + file.getName(), Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al cargar: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+     @FXML
+    private void guardarJSON(File file) {
+        try {
+                PersistenciaJSON persistencia = new PersistenciaJSON();
+                persistencia.guardar(gestor.listarTodos(), file.getAbsolutePath());
+                mostrarAlerta("Éxito", "Datos guardados en " + file.getName(), Alert.AlertType.INFORMATION);
+           
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+    @FXML
+    private void cargarJSON(File file) {
+        try {
+           
+                PersistenciaJSON persistencia = new PersistenciaJSON();
                 List<Vehiculo> vehiculosCargados = persistencia.cargar(file.getAbsolutePath());
                 gestor = new GestorVehiculos();
                 for (Vehiculo v : vehiculosCargados) {
                     gestor.agregar(v);
                 }
                 actualizarTabla();
-                mostrarAlerta("Éxito", "Datos cargados desde vehiculos.csv", Alert.AlertType.INFORMATION);
-            }
+                mostrarAlerta("Éxito", "Datos cargados desde " + file.getName(), Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al cargar: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
+    @FXML
+    public boolean serializar() {
+        try {
+            Serializador persistencia = new Serializador();
+            persistencia.guardar(gestor.listarTodos(), "./saved files/vehiculos.dat");
+            mostrarAlerta("Éxito", "Datos guardados en vehiculos.dat", Alert.AlertType.INFORMATION);
+            return true;
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al guardar los datos: " + e.getMessage(), Alert.AlertType.ERROR);
+            return false;
+        }
+    }
 
+    @FXML
+    private void deserializar() {
+        try {
+            Serializador persistencia = new Serializador();
+            List<Vehiculo> vehiculosCargados = persistencia.cargar("./saved files/vehiculos.dat");
+            gestor = new GestorVehiculos();
+            for (Vehiculo v : vehiculosCargados) {
+                gestor.agregar(v);
+            }
+            actualizarTabla();
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al cargar los datos: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+    
+    
     
     public void actualizarTabla() {
         tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
+    private static final long serialVersionUID = 1L;
     protected String patente;
     protected Marca marca;
     protected LocalDate fabricacion;

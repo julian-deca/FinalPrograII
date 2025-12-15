@@ -46,12 +46,12 @@ public class PathFinder {
         }
         return file;
        }
-      public File obtenerPathGuardar(ActionEvent event, String tipoArchivo){
+      public File obtenerPathGuardar(ActionEvent event){
         File file = obtenerPath(event,true);
         return file;
     }
       
-     public File obtenerPathCargar(ActionEvent event, String tipoArchivo){
+     public File obtenerPathCargar(ActionEvent event){
         File file = obtenerPath(event,false);
         return file;
     }

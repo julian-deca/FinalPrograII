@@ -50,8 +50,12 @@
             <HBox spacing="5">
                 <Button text="Aplicar Descuento 10%" onAction="#aplicarDescuento"/>
                 <Button text="Exportar a TXT" onAction="#exportarTXT"/>
-                <Button text="Guardar" onAction="#guardar"/>
-                <Button text="Cargar CSV" onAction="#cargarCSV"/>
+            </HBox>
+             <HBox spacing="5">
+                <Button text="Guardar" onAction="#serializar"/>
+                <Button text="Cargar" onAction="#deserializar"/>
+                <Button text="Exportar" onAction="#importar"/>
+                <Button text="Importar" onAction="#exportar"/>
             </HBox>
         </VBox>
     </HBox>
