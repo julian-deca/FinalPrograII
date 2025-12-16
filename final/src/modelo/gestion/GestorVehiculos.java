@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import modelo.entidades.Condicion;
 import modelo.entidades.Marca;
+import modelo.excepciones.DuplicateVehiculoException;
 import modelo.excepciones.VehiculoNotFoundException;
 
 public class GestorVehiculos implements CRUD<Vehiculo> {
@@ -27,9 +28,14 @@ public class GestorVehiculos implements CRUD<Vehiculo> {
     @Override
     public boolean agregar(Vehiculo vehiculo) {
         if (buscar(vehiculo.getPatente()) != null) {
-            //throw new DuplicateVehiculoException("Vehículo con patente " + vehiculo.getPatente() + " ya existe");
+            throw new DuplicateVehiculoException("Vehículo con patente " + vehiculo.getPatente() + " ya existe");
         }
-        return vehiculos.add(vehiculo);
+        return agregarVehiculo(vehiculos,vehiculo);
+    }
+    
+    // Wildcard con límite inferior
+    public static boolean agregarVehiculo(List <? super Vehiculo> destino, Vehiculo vehiculo) {
+        return destino.add(vehiculo);
     }
     
     @Override

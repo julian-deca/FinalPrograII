@@ -6,10 +6,7 @@ package controlador;
  */
 
 import java.time.LocalDate;
-import modelo.gestion.GestorVehiculos;
 import modelo.entidades.*;
-import modelo.persistencia.PersistenciaCSV;
-import modelo.persistencia.ExportadorTXT;
 import modelo.excepciones.VehiculoNotFoundException;
 import modelo.excepciones.DuplicateVehiculoException;
 
@@ -17,10 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import java.util.List;
-import java.util.function.Predicate;
 import javafx.scene.Node;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
@@ -80,10 +74,8 @@ public class ControladorForm {
         showPanel(panelMoto,false);
         showPanel(panelDatos,false);
 
-        System.out.println(this.controladorPrincipal.gestor.listarTodos());
         if (tipo != null){
         showPanel(panelDatos,true);
-
 
         switch (tipo) {
             case Tipo.AUTO -> showPanel(panelAuto,true);
@@ -98,8 +90,8 @@ public class ControladorForm {
             Vehiculo vehiculo = crearVehiculoDesdeFormulario();
             this.controladorPrincipal.gestor.agregar(vehiculo);
             limpiarFormulario();
-           actualizarTabla();
-           cerrarForm(event);
+            actualizarTabla();
+            cerrarForm(event);
             mostrarAlerta("Éxito", "Vehículo agregado correctamente", Alert.AlertType.INFORMATION);
 
         } catch (DuplicateVehiculoException e) {

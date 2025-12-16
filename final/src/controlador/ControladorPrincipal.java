@@ -207,7 +207,6 @@ public class ControladorPrincipal {
     
     @FXML
     private void limpiarFiltro(ActionEvent event) {
-        filtrar = false;
         resetComboBox(cmbFiltroCondicion);
         resetComboBox(cmbFiltroMarca);
         setFiltroMarca(null);

@@ -11,8 +11,11 @@ package modelo.persistencia;
 import modelo.entidades.Vehiculo;
 import java.util.List;
 import java.io.*;
+import modelo.entidades.Auto;
+import modelo.entidades.Camion;
 import modelo.entidades.Condicion;
 import modelo.entidades.Marca;
+import modelo.entidades.Moto;
 
 public class ExportadorTXT {
     
@@ -41,8 +44,26 @@ public class ExportadorTXT {
                     writer.println("Precio: $" + String.format("%,.2f", v.getPrecio()));
                     writer.println("Condicion: " + v.getCondicion());
                     writer.println("Impuesto: $" + String.format("%,.2f", v.calcularImpuesto()));
-                    writer.println("-".repeat(30));
-                    writer.println();
+                    
+                    switch (v) {
+                        case Auto auto -> {
+                            writer.println("Numero de Puertas: " + String.valueOf(auto.getNumeroPuertas()));
+                            writer.println("Combustible: " + auto.getCombustible());
+                            writer.println("Tiene Caja Automatica: " + (auto.getTieneCajaAutomatica()? "Si" : "No"));
+                        }
+                        case Camion camion -> {
+                            writer.println("Capacidad de Carga: " + camion.calcularCapacidadCarga());
+                            writer.println("Nro de Ejes: " + String.valueOf(camion.getNumeroEjes()));
+                            writer.println("Tiene Acoplado: " + (camion.getTieneAcoplado()? "Si" : "No"));
+                        }
+                        case Moto moto -> {
+                            writer.println("Cilindrada: " + String.valueOf(moto.getCilindrada()));
+                            writer.println("Tiene Sidecar: " + (moto.getTieneSidecar()? "Si" : "No"));
+                        }
+                        default -> {}
+                    }
+                writer.println("-".repeat(30));
+                writer.println();
             }
             
             writer.println("Total de vehículos en el reporte: " + contador);

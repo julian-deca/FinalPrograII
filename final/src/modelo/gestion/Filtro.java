@@ -28,8 +28,15 @@ public class Filtro {
                        .collect(Collectors.toList());
     }
     
-    // Wildcard con límite inferior
-    public static void agregarVehiculos(List<? super Vehiculo> destino, List<? extends Vehiculo> fuente) {
-        destino.addAll(fuente);
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     // Wildcard con límite inferior
+   
 }

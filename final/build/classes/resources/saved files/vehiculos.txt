@@ -9,6 +9,9 @@ Fabricacion: 2015-06-30
 Precio: $12.500,00
 Condicion: REPARACION
 Impuesto: $250,00
+Numero de Puertas: 2
+Combustible: GNC
+Tiene Caja Automatica: No
 ------------------------------
 
 Vehículo #2
@@ -19,6 +22,9 @@ Fabricacion: 2019-11-20
 Precio: $120.000,00
 Condicion: USADO
 Impuesto: $6.150,00
+Capacidad de Carga: 15000.0Kg
+Nro de Ejes: 4
+Tiene Acoplado: Si
 ------------------------------
 
 Vehículo #3
@@ -29,6 +35,9 @@ Fabricacion: 2020-08-12
 Precio: $19.500,00
 Condicion: USADO
 Impuesto: $390,00
+Numero de Puertas: 5
+Combustible: NAFTA
+Tiene Caja Automatica: Si
 ------------------------------
 
 Vehículo #4
@@ -39,6 +48,9 @@ Fabricacion: 2021-03-25
 Precio: $95.000,00
 Condicion: USADO
 Impuesto: $4.830,00
+Capacidad de Carga: 8000.0Kg
+Nro de Ejes: 2
+Tiene Acoplado: No
 ------------------------------
 
 Vehículo #5
@@ -49,9 +61,24 @@ Fabricacion: 2022-05-15
 Precio: $25.000,00
 Condicion: USADO
 Impuesto: $500,00
+Numero de Puertas: 4
+Combustible: NAFTA
+Tiene Caja Automatica: Si
 ------------------------------
 
 Vehículo #6
+Tipo: MOTO
+Patente: KK456LM
+Marca: HONDA
+Fabricacion: 2023-01-10
+Precio: $8.500,00
+Condicion: NUEVO
+Impuesto: $127,50
+Cilindrada: 250
+Tiene Sidecar: No
+------------------------------
+
+Vehículo #7
 Tipo: MOTO
 Patente: ZZ111AA
 Marca: BMW
@@ -59,6 +86,8 @@ Fabricacion: 2024-02-01
 Precio: $18.000,00
 Condicion: NUEVO
 Impuesto: $270,00
+Cilindrada: 1200
+Tiene Sidecar: Si
 ------------------------------
 
-Total de vehículos en el reporte: 6
+Total de vehículos en el reporte: 7

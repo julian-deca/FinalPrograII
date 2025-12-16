@@ -127,7 +127,7 @@ public class PersistenciaJSON implements Persistencia {
                 
                 mapa.put(key, val);
             }
-            System.out.println(mapa);
+            
             try {
                 Tipo tipoEnum = Tipo.valueOf(mapa.get("tipo"));
                 String patente = mapa.get("patente");

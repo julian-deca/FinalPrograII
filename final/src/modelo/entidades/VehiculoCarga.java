@@ -10,6 +10,6 @@ package modelo.entidades;
  */
 
 public interface VehiculoCarga {
-    double calcularCapacidadCarga();
+    String calcularCapacidadCarga();
     void verificarDocumentacion();
 }

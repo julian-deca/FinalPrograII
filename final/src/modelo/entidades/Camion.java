@@ -43,8 +43,8 @@ public class Camion extends Vehiculo implements VehiculoCarga, Serializable {
     
     // Implementación de la interfaz VehiculoCarga
     @Override
-    public double calcularCapacidadCarga() {
-        return capacidadCarga;
+    public String calcularCapacidadCarga() {
+        return String.valueOf(capacidadCarga) + "Kg";
     }
     
     @Override
