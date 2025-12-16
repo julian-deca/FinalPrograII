@@ -1,0 +1,74 @@
+=== REPORTE DE VEHÍCULOS ===
+==================================================
+
+Vehículo #1
+Tipo: AUTO
+Patente: FF555QQ
+Marca: FORD
+Fabricacion: 2015-06-30
+Precio: $12.500,00
+Condicion: REPARACION
+Impuesto: $250,00
+------------------------------
+
+Vehículo #2
+Tipo: CAMION
+Patente: TT987OP
+Marca: MERCEDES
+Fabricacion: 2019-11-20
+Precio: $120.000,00
+Condicion: USADO
+Impuesto: $6.150,00
+------------------------------
+
+Vehículo #3
+Tipo: AUTO
+Patente: EE333RR
+Marca: CHEVROLET
+Fabricacion: 2020-08-12
+Precio: $19.500,00
+Condicion: USADO
+Impuesto: $390,00
+------------------------------
+
+Vehículo #4
+Tipo: CAMION
+Patente: PP777UU
+Marca: VOLKSWAGEN
+Fabricacion: 2021-03-25
+Precio: $95.000,00
+Condicion: USADO
+Impuesto: $4.830,00
+------------------------------
+
+Vehículo #5
+Tipo: AUTO
+Patente: AB123CD
+Marca: TOYOTA
+Fabricacion: 2022-05-15
+Precio: $25.000,00
+Condicion: USADO
+Impuesto: $500,00
+------------------------------
+
+Vehículo #6
+Tipo: MOTO
+Patente: KK456LM
+Marca: HONDA
+Fabricacion: 2023-01-10
+Precio: $8.500,00
+Condicion: NUEVO
+Impuesto: $127,50
+------------------------------
+
+Vehículo #7
+Tipo: MOTO
+Patente: ZZ111AA
+Marca: BMW
+Fabricacion: 2024-02-01
+Precio: $18.000,00
+Condicion: NUEVO
+Impuesto: $270,00
+------------------------------
+
+Total de vehículos en el reporte: 7

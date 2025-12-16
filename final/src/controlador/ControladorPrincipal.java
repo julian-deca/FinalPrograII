@@ -5,6 +5,7 @@ package controlador;
  * @author Julian
  */
 
+import config.FilePaths;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -15,21 +16,19 @@ import modelo.persistencia.PersistenciaCSV;
 import modelo.persistencia.ExportadorTXT;
 import modelo.excepciones.VehiculoNotFoundException;
 import modelo.excepciones.DuplicateVehiculoException;
-import visual.Form;
+
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import java.util.List;
-import java.util.function.Predicate;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import modelo.persistencia.Persistencia;
 import modelo.persistencia.PersistenciaJSON;
 import modelo.persistencia.Serializador;
    
@@ -63,22 +62,17 @@ public class ControladorPrincipal {
     
     public GestorVehiculos gestor;
     public Vehiculo vehiculoSeleccionado;
+    
+    private Marca filtroMarca;
+    private Condicion filtroCondicion;
 
     
     public void initialize() {
         gestor = new GestorVehiculos();
         
-        // Inicializar comboboxes
      
         cmbFiltroCondicion.setItems(FXCollections.observableArrayList(Condicion.values()));
         cmbFiltroMarca.setItems(FXCollections.observableArrayList(Marca.values()));
-      
-        // Configurar listener para cambio de tipo
-      
-        
-        
-        
-        
         patenteColumn.setCellValueFactory(new PropertyValueFactory<>("patente"));
         tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         marcaColumn.setCellValueFactory(new PropertyValueFactory<>("marca"));
@@ -88,52 +82,41 @@ public class ControladorPrincipal {
         condicionColumn.setCellValueFactory(new PropertyValueFactory<>("condicion"));
 
         tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));
-        
         seleccionTabla = tablaVehiculos.getSelectionModel();
-        
         
         deserializar();
     }
     
+    private void setFiltroMarca(Marca filtro){
+        filtroMarca = filtro;
+    }
+    private Marca getFiltroMarca(){
+        return filtroMarca;
+    }
+    
+    private void setFiltroCondicion(Condicion filtro){
+        filtroCondicion = filtro;
+    }
+    private Condicion getFiltroCondicion(){
+        return filtroCondicion;
+    }
+    
+    
     @FXML
     private void openNewForm(Boolean editar) {
         try {
-            
-            
-             FXMLLoader loader = new FXMLLoader(getClass().getResource("/visual/vehiculosForm.fxml"));
-             Parent root = loader.load();
-                     System.out.println(root);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/visual/vehiculosForm.fxml"));
+            Parent root = loader.load();
 
             ControladorForm controlador = loader.getController();
             controlador.setControladorPrincipal(this);
             controlador.setEditar(editar);
             Stage newStage = new Stage();
-            newStage.setTitle("New Form");
+            newStage.setTitle(editar? "Editar Vehiculo" :"Crear Vehiculo");
             newStage.setScene(new Scene(root, 350, 600)); 
 
             newStage.show();
             
-            
-           // Form formVehiculos = new Form("/visual/vehiculosForm.fxml","Formulario",400,300);
-            
-           // formVehiculos.openNewForm();
-            /*
-            System.out.println(getClass().getResource("/visual/vehiculosForm.fxml"));
-            // Load the FXML for the new form
-            Parent root = FXMLLoader.load(getClass().getResource("/visual/vehiculosForm.fxml"));
-
-            // Create a new Stage (window)
-            Stage newStage = new Stage();
-            newStage.setTitle("New Form");
-            newStage.setScene(new Scene(root, 400, 300)); // Set scene with dimensions
-
-            // Show the new stage
-            newStage.show();
-
-            // Optional: Hide the current window if desired
-            // ((Node)(event.getSource())).getScene().getWindow().hide();
-*/
-
         } catch (IOException e) {
             System.out.println(e);
             mostrarAlerta("Error", "Datos inválidos: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -142,7 +125,7 @@ public class ControladorPrincipal {
     
     @FXML
     private void openNewForm(){
-    this.openNewForm(false);
+        this.openNewForm(false);
     }
     
    
@@ -163,10 +146,6 @@ public class ControladorPrincipal {
             vehiculoSeleccionado = seleccionTabla.getSelectedItem();
             System.out.println(vehiculoSeleccionado.getTipo());
             this.openNewForm(true);
-           // Vehiculo vehiculo = crearVehiculoDesdeFormulario();
-           // gestor.actualizar(vehiculo);
-            //actualizarTabla();
-            //mostrarAlerta("Éxito", "Vehículo actualizado correctamente", Alert.AlertType.INFORMATION);
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
@@ -186,7 +165,6 @@ public class ControladorPrincipal {
                 String patente = vehiculoSeleccionado.getPatente();
                 gestor.eliminar(patente);
                 actualizarTabla();
-                mostrarAlerta("Éxito", "Vehículo eliminado correctamente", Alert.AlertType.INFORMATION);
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -211,29 +189,30 @@ public class ControladorPrincipal {
     }
     
     @FXML
-    private void aplicarFiltro(ActionEvent event) {
-        Predicate<Vehiculo> filtro = v -> true;
+    private void setFiltros(){
+        setFiltroMarca(cmbFiltroMarca.getValue());
+        setFiltroCondicion(cmbFiltroCondicion.getValue());
+        actualizarTabla();
+    }
+    
+    
+    private List<Vehiculo> getVehiculosFiltrados() {
+        List<Vehiculo> vehiculosFiltrados;
         
-        if (cmbFiltroCondicion.getValue() != null) {
-            filtro = filtro.and(v -> v.getCondicion() == cmbFiltroCondicion.getValue());
-            System.out.println(cmbFiltroCondicion.getValue());
-        }
+        vehiculosFiltrados = gestor.filtrarPorCondicion(gestor.listarTodos(),getFiltroCondicion());
+        vehiculosFiltrados = gestor.filtrarPorMarca(vehiculosFiltrados, getFiltroMarca());
         
-        if (cmbFiltroMarca.getValue() != null) {
-            filtro = filtro.and(v -> v.getMarca() == cmbFiltroMarca.getValue());
-        }
-        
-        List<Vehiculo> vehiculosFiltrados = gestor.listarTodos().stream()
-                                                .filter(filtro)
-                                                .collect(java.util.stream.Collectors.toList());
-        
-        tablaVehiculos.setItems(FXCollections.observableArrayList(vehiculosFiltrados));
+        return vehiculosFiltrados;
     }
     
     @FXML
     private void limpiarFiltro(ActionEvent event) {
+        filtrar = false;
         resetComboBox(cmbFiltroCondicion);
         resetComboBox(cmbFiltroMarca);
+        setFiltroMarca(null);
+        setFiltroCondicion(null);
+
         actualizarTabla();
     }
     
@@ -263,10 +242,13 @@ public class ControladorPrincipal {
     @FXML
     private void exportarTXT(ActionEvent event) {
         try {
+            PathFinder pathFinder = new PathFinder();
+            File file = pathFinder.obetenerPathTXT(event);
             ExportadorTXT exportador = new ExportadorTXT();
-            Predicate<Vehiculo> filtro = v -> v.getPrecio() > 10000; // Ejemplo: vehículos caros
-            exportador.exportarFiltrado(gestor.listarTodos(), filtro, "vehiculos_filtrados.txt");
-            mostrarAlerta("Éxito", "Datos exportados a vehiculos_filtrados.txt", Alert.AlertType.INFORMATION);
+            
+            List<Vehiculo> listaFiltrada = getVehiculosFiltrados();
+            exportador.exportarFiltrado(listaFiltrada, getFiltroMarca(),getFiltroCondicion(), file.getAbsolutePath());
+            mostrarAlerta("Éxito", "Datos exportados a " + file.getName(), Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al exportar: " + e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -276,25 +258,31 @@ public class ControladorPrincipal {
     private void importar(ActionEvent event){
         try {
                 PathFinder pathFinder = new PathFinder();
-                File file = pathFinder.obtenerPathGuardar(event);
+                File file = pathFinder.obtenerPathCargar(event);
                 if(file != null){
                     String extension = PathFinder.getExtension(file);
                     if(extension != null && !extension.isEmpty()){
                         
+                       
                         switch (extension) {
-                        case "json" -> guardarJSON(file);
-                        case "csv" ->guardarCSV(file);
+                        case "json" -> {
+                            PersistenciaJSON persistencia = new PersistenciaJSON();
+                            cargarArchivo(file, persistencia);
+                            }
+                        case "csv" ->{
+                            PersistenciaCSV persistencia = new PersistenciaCSV();
+                            cargarArchivo(file, persistencia);
+                            }
                         default -> mostrarAlerta("Error", "Formato de Archivo Invalido", Alert.AlertType.ERROR);
                         }
                     }
-                        
                 }
                    
                 }
            
            
          catch (Exception e) {
-            mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al cargar: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
@@ -302,14 +290,20 @@ public class ControladorPrincipal {
     private void exportar(ActionEvent event){
         try {
                 PathFinder pathFinder = new PathFinder();
-                File file = pathFinder.obtenerPathCargar(event);
+                File file = pathFinder.obtenerPathGuardar(event);
                 if(file != null){
                     String extension = PathFinder.getExtension(file);
                     if(extension != null && !extension.isEmpty()){
                         
                         switch (extension) {
-                        case "json" -> cargarJSON(file);
-                        case "csv" ->cargarCSV(file);
+                        case "json" -> {
+                            PersistenciaJSON persistencia = new PersistenciaJSON();
+                            guardarArchivo(file,persistencia);
+                            }
+                        case "csv" ->{
+                            PersistenciaCSV persistencia = new PersistenciaCSV();
+                            guardarArchivo(file,persistencia);
+                            }
                         default -> mostrarAlerta("Error", "Formato de Archivo Invalido", Alert.AlertType.ERROR);
                         }
                     }
@@ -324,10 +318,8 @@ public class ControladorPrincipal {
         }
     }
     
-    @FXML
-    private void guardarCSV(File file) {
+    private void guardarArchivo(File file, Persistencia persistencia){
         try {
-                PersistenciaCSV persistencia = new PersistenciaCSV();
                 persistencia.guardar(gestor.listarTodos(), file.getAbsolutePath());
                 mostrarAlerta("Éxito", "Datos guardados en " + file.getName(), Alert.AlertType.INFORMATION);
            
@@ -336,45 +328,13 @@ public class ControladorPrincipal {
         }
     }
     
-    @FXML
-    private void cargarCSV(File file) {
+    private void cargarArchivo(File file, Persistencia persistencia){
         try {
-                PersistenciaCSV persistencia = new PersistenciaCSV();
                 List<Vehiculo> vehiculosCargados = persistencia.cargar(file.getAbsolutePath());
                 gestor = new GestorVehiculos();
                 for (Vehiculo v : vehiculosCargados) {
                     gestor.agregar(v);
                                 }
-
-                actualizarTabla();
-                mostrarAlerta("Éxito", "Datos cargados desde " + file.getName(), Alert.AlertType.INFORMATION);
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-    
-     @FXML
-    private void guardarJSON(File file) {
-        try {
-                PersistenciaJSON persistencia = new PersistenciaJSON();
-                persistencia.guardar(gestor.listarTodos(), file.getAbsolutePath());
-                mostrarAlerta("Éxito", "Datos guardados en " + file.getName(), Alert.AlertType.INFORMATION);
-           
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-    
-    @FXML
-    private void cargarJSON(File file) {
-        try {
-           
-                PersistenciaJSON persistencia = new PersistenciaJSON();
-                List<Vehiculo> vehiculosCargados = persistencia.cargar(file.getAbsolutePath());
-                gestor = new GestorVehiculos();
-                for (Vehiculo v : vehiculosCargados) {
-                    gestor.agregar(v);
-                }
                 actualizarTabla();
                 mostrarAlerta("Éxito", "Datos cargados desde " + file.getName(), Alert.AlertType.INFORMATION);
         } catch (Exception e) {
@@ -386,8 +346,8 @@ public class ControladorPrincipal {
     public boolean serializar() {
         try {
             Serializador persistencia = new Serializador();
-            persistencia.guardar(gestor.listarTodos(), "./saved files/vehiculos.dat");
-            mostrarAlerta("Éxito", "Datos guardados en vehiculos.dat", Alert.AlertType.INFORMATION);
+            persistencia.guardar(gestor.listarTodos(), FilePaths.getPathBinarioString());
+            mostrarAlerta("Éxito", "Datos guardados en " + FilePaths.FILE_BIN, Alert.AlertType.INFORMATION);
             return true;
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al guardar los datos: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -398,8 +358,16 @@ public class ControladorPrincipal {
     @FXML
     private void deserializar() {
         try {
+            String path = FilePaths.getPathBinarioString();
+            File archivo = new File(path);
+            
+            if(!archivo.exists()){
+                return;
+            }
+            
             Serializador persistencia = new Serializador();
-            List<Vehiculo> vehiculosCargados = persistencia.cargar("./saved files/vehiculos.dat");
+            
+            List<Vehiculo> vehiculosCargados = persistencia.cargar(path);
             gestor = new GestorVehiculos();
             for (Vehiculo v : vehiculosCargados) {
                 gestor.agregar(v);
@@ -410,15 +378,12 @@ public class ControladorPrincipal {
         }
     }
     
-    
-    
-    
     public void actualizarTabla() {
-        tablaVehiculos.setItems(FXCollections.observableArrayList(gestor.listarTodos()));
+        List<Vehiculo> listaActualizada = getVehiculosFiltrados();
+        
+        tablaVehiculos.setItems(FXCollections.observableArrayList(listaActualizada));
         tablaVehiculos.refresh();
     }
-    
-  
     
     public void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);

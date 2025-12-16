@@ -48,16 +48,16 @@ public class PersistenciaJSON implements Persistencia {
                 case Auto auto -> {
                     appendJsonField(json, "numeroPuertas", String.valueOf(auto.getNumeroPuertas()), false);
                     appendJsonField(json, "combustible", auto.getCombustible().toString(), true);
-                    appendJsonField(json, "tieneCajaAutomatica", String.valueOf(auto.isTieneCajaAutomatica()), false, true); 
+                    appendJsonField(json, "tieneCajaAutomatica", String.valueOf(auto.getTieneCajaAutomatica()), false, true); 
                 }
                 case Camion camion -> {
                     appendJsonField(json, "capacidadCarga", String.valueOf(camion.getCapacidadCarga()), false);
                     appendJsonField(json, "numeroEjes", String.valueOf(camion.getNumeroEjes()), false);
-                    appendJsonField(json, "tieneAcoplado", String.valueOf(camion.isTieneAcoplado()), false, true);
+                    appendJsonField(json, "tieneAcoplado", String.valueOf(camion.getTieneAcoplado()), false, true);
                 }
                 case Moto moto -> {
                     appendJsonField(json, "cilindrada", String.valueOf(moto.getCilindrada()), false);
-                    appendJsonField(json, "tieneSidecar", String.valueOf(moto.isTieneSidecar()), false, true);
+                    appendJsonField(json, "tieneSidecar", String.valueOf(moto.getTieneSidecar()), false, true);
                 }
                 default -> {
                 }

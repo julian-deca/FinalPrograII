@@ -1,12 +1,14 @@
 package modelo.entidades;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  *
  * @author Julian
  */
-public class Camion extends Vehiculo implements VehiculoCarga {
+public class Camion extends Vehiculo implements VehiculoCarga, Serializable {
+    private static final long serialVersionUID = 1L;
     private double capacidadCarga;
     private int numeroEjes;
     private boolean tieneAcoplado;
@@ -30,7 +32,7 @@ public class Camion extends Vehiculo implements VehiculoCarga {
     
     @Override
     public double calcularImpuesto() {
-        return precio * 0.05 + capacidadCarga * 10;
+        return precio * 0.05 + capacidadCarga * 0.01;
     }
     
 
@@ -57,7 +59,7 @@ public class Camion extends Vehiculo implements VehiculoCarga {
     public int getNumeroEjes() { return numeroEjes; }
     public void setNumeroEjes(int numeroEjes) { this.numeroEjes = numeroEjes; }
     
-    public boolean isTieneAcoplado() { return tieneAcoplado; }
+    public boolean getTieneAcoplado() { return tieneAcoplado; }
     public void setTieneAcoplado(boolean tieneAcoplado) { 
         this.tieneAcoplado = tieneAcoplado; 
     }

@@ -101,12 +101,18 @@ public class GestorVehiculos implements CRUD<Vehiculo> {
     }
     
     // Filtrado con wildcards
-    public List<Vehiculo> filtrarPorCondicion(Condicion condicion) {
-        return (List<Vehiculo>) Filtro.filtrarPorCondicion(vehiculos, condicion);
+    public List<Vehiculo> filtrarPorCondicion(List<Vehiculo> listVehiculos, Condicion condicion) {
+        if (condicion == null){
+            return listVehiculos;
+        }
+        return (List<Vehiculo>) Filtro.filtrarPorCondicion(listVehiculos, condicion);
     }
     
-    public List<Vehiculo> filtrarPorMarca(Marca marca) {
-        return (List<Vehiculo>) Filtro.filtrarPorMarca(vehiculos, marca);
+    public List<Vehiculo> filtrarPorMarca(List<Vehiculo> listVehiculos,Marca marca) {
+        if (marca == null){
+            return listVehiculos;
+        }
+        return (List<Vehiculo>) Filtro.filtrarPorMarca(listVehiculos, marca);
     }
     
     // Métodos con interfaces funcionales

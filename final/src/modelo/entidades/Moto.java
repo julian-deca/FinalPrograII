@@ -1,12 +1,14 @@
 package modelo.entidades;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  *
  * @author Julian
  */
-public class Moto extends Vehiculo {
+public class Moto extends Vehiculo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int cilindrada;
     private boolean tieneSidecar;
     
@@ -42,7 +44,7 @@ public class Moto extends Vehiculo {
     public int getCilindrada() { return cilindrada; }
     public void setCilindrada(int cilindrada) { this.cilindrada = cilindrada; }
     
-    public boolean isTieneSidecar() { return tieneSidecar; }
+    public boolean getTieneSidecar() { return tieneSidecar; }
     public void setTieneSidecar(boolean tieneSidecar) { this.tieneSidecar = tieneSidecar; }
     
  

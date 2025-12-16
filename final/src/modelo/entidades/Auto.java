@@ -1,13 +1,15 @@
 
 package modelo.entidades;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  *
  * @author Julian
  */
-public class Auto extends Vehiculo {
+public class Auto extends Vehiculo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int numeroPuertas;
     private Combustible combustible;
     private boolean tieneCajaAutomatica;
@@ -32,7 +34,6 @@ public class Auto extends Vehiculo {
     @Override
     public double calcularImpuesto() {
         double base = precio * 0.02;
-        //if (fabricacion < 2010) base *= 1.5;
         return base;
     }
     
@@ -42,14 +43,13 @@ public class Auto extends Vehiculo {
         System.out.println("Realizando mantenimiento de auto: cambio de aceite y filtros");
     }
     
-    // Getters y Setters adicionales
     public int getNumeroPuertas() { return numeroPuertas; }
     public void setNumeroPuertas(int numeroPuertas) { this.numeroPuertas = numeroPuertas; }
     
     public Combustible getCombustible() { return combustible; }
     public void setCombustible(Combustible combustible) { this.combustible = combustible; }
     
-    public boolean isTieneCajaAutomatica() { return tieneCajaAutomatica; }
+    public boolean getTieneCajaAutomatica() { return tieneCajaAutomatica; }
     public void setTieneCajaAutomatica(boolean tieneCajaAutomatica) { 
         this.tieneCajaAutomatica = tieneCajaAutomatica; 
     }

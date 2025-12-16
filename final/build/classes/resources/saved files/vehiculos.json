@@ -1,0 +1,84 @@
+[
+  {
+    "tipo": "AUTO",
+    "patente": "FF555QQ",
+    "marca": "FORD",
+    "fabricacion": "2015-06-30",
+    "precio": 12500.0,
+    "color": "NEGRO",
+    "condicion": "REPARACION",
+    "numeroPuertas": 2,
+    "combustible": "GNC",
+    "tieneCajaAutomatica": false
+  },
+  {
+    "tipo": "CAMION",
+    "patente": "TT987OP",
+    "marca": "MERCEDES",
+    "fabricacion": "2019-11-20",
+    "precio": 120000.0,
+    "color": "AZUL",
+    "condicion": "USADO",
+    "capacidadCarga": 15000.0,
+    "numeroEjes": 4,
+    "tieneAcoplado": true
+  },
+  {
+    "tipo": "AUTO",
+    "patente": "EE333RR",
+    "marca": "CHEVROLET",
+    "fabricacion": "2020-08-12",
+    "precio": 19500.0,
+    "color": "AZUL",
+    "condicion": "USADO",
+    "numeroPuertas": 5,
+    "combustible": "NAFTA",
+    "tieneCajaAutomatica": true
+  },
+  {
+    "tipo": "CAMION",
+    "patente": "PP777UU",
+    "marca": "VOLKSWAGEN",
+    "fabricacion": "2021-03-25",
+    "precio": 95000.0,
+    "color": "BLANCO",
+    "condicion": "USADO",
+    "capacidadCarga": 8000.0,
+    "numeroEjes": 2,
+    "tieneAcoplado": false
+  },
+  {
+    "tipo": "AUTO",
+    "patente": "AB123CD",
+    "marca": "TOYOTA",
+    "fabricacion": "2022-05-15",
+    "precio": 25000.0,
+    "color": "BLANCO",
+    "condicion": "USADO",
+    "numeroPuertas": 4,
+    "combustible": "NAFTA",
+    "tieneCajaAutomatica": true
+  },
+  {
+    "tipo": "MOTO",
+    "patente": "KK456LM",
+    "marca": "HONDA",
+    "fabricacion": "2023-01-10",
+    "precio": 8500.0,
+    "color": "ROJO",
+    "condicion": "NUEVO",
+    "cilindrada": 250,
+    "tieneSidecar": false
+  },
+  {
+    "tipo": "MOTO",
+    "patente": "ZZ111AA",
+    "marca": "BMW",
+    "fabricacion": "2024-02-01",
+    "precio": 18000.0,
+    "color": "NEGRO",
+    "condicion": "NUEVO",
+    "cilindrada": 1200,
+    "tieneSidecar": true
+  }
+]

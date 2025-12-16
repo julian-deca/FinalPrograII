@@ -36,27 +36,18 @@ public class ControladorForm {
     @FXML private CheckBox chkCaja, chkAcoplado, chkSidecar;
     @FXML private VBox panelAuto, panelCamion, panelMoto,panelDatos;
     @FXML private DatePicker datePickerFabricacion;
-    
     @FXML private Button btnCrear,btnActualizar;
-
-    
     
     private ControladorPrincipal controladorPrincipal;
     
-    
-    
-    
-    
     public void initialize() {
         
-        // Inicializar comboboxes
         cmbMarca.setItems(FXCollections.observableArrayList(Marca.values()));
         cmbColor.setItems(FXCollections.observableArrayList(Color.values()));
         cmbCondicion.setItems(FXCollections.observableArrayList(Condicion.values()));
         cmbCombustible.setItems(FXCollections.observableArrayList(Combustible.values()));
         cmbTipo.setItems(FXCollections.observableArrayList(Tipo.values()));
         
-        // Configurar listener para cambio de tipo
         cmbTipo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             mostrarPanelEspecifico(newVal);
         });
@@ -189,9 +180,8 @@ public class ControladorForm {
         datePickerFabricacion.setValue(vehiculoEdicion.getFabricacion());
         txtPrecio.setText(String.valueOf(vehiculoEdicion.getPrecio()));
         cmbCondicion.setValue(vehiculoEdicion.getCondicion());
-        cmbTipo.setValue(vehiculoEdicion.getTipo());  // assuming Vehiculo has getTipo()
+        cmbTipo.setValue(vehiculoEdicion.getTipo());  
 
-        // Limpio los campos específicos por las dudas
         txtPuertas.clear();
         cmbCombustible.setValue(null);
         chkCaja.setSelected(false);
@@ -203,22 +193,23 @@ public class ControladorForm {
         txtCilindrada.clear();
         chkSidecar.setSelected(false);
 
-        // Detectar tipo real del vehículo
-        if (vehiculoEdicion instanceof Auto auto) {
-            txtPuertas.setText(String.valueOf(auto.getNumeroPuertas()));
-            cmbCombustible.setValue(auto.getCombustible());
-            chkCaja.setSelected(auto.isTieneCajaAutomatica()); // Ajusta según tu atributo
-        }
-
-        else if (vehiculoEdicion instanceof Camion camion) {
-            txtCarga.setText(String.valueOf(camion.getCapacidadCarga()));
-            txtEjes.setText(String.valueOf(camion.getNumeroEjes()));
-            chkAcoplado.setSelected(camion.isTieneAcoplado());
-        }
-
-        else if (vehiculoEdicion instanceof Moto moto) {
-            txtCilindrada.setText(String.valueOf(moto.getCilindrada()));
-            chkSidecar.setSelected(moto.isTieneSidecar());
+        switch (vehiculoEdicion) {
+            case Auto auto -> {
+                txtPuertas.setText(String.valueOf(auto.getNumeroPuertas()));
+                cmbCombustible.setValue(auto.getCombustible());
+                chkCaja.setSelected(auto.getTieneCajaAutomatica()); // Ajusta según tu atributo
+            }
+            case Camion camion -> {
+                txtCarga.setText(String.valueOf(camion.getCapacidadCarga()));
+                txtEjes.setText(String.valueOf(camion.getNumeroEjes()));
+                chkAcoplado.setSelected(camion.getTieneAcoplado());
+            }
+            case Moto moto -> {
+                txtCilindrada.setText(String.valueOf(moto.getCilindrada()));
+                chkSidecar.setSelected(moto.getTieneSidecar());
+            }
+            default -> {
+            }
         }
 
 
@@ -242,15 +233,6 @@ public class ControladorForm {
     }
     
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        
         this.controladorPrincipal.mostrarAlerta(titulo, mensaje, tipo);
-       
-        
-        /*Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-*/
     }
 }

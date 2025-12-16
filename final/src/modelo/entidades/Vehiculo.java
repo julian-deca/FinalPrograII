@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1l;
     protected String patente;
     protected Marca marca;
     protected LocalDate fabricacion;
@@ -17,7 +17,6 @@ public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
     protected Color color;
     protected Tipo tipo;
     
-    // Constructores sobrecargados
     public Vehiculo(String patente, Marca marca, LocalDate fabricacion,double precio, Color color, Condicion condicion, Tipo tipo ) {
         this.patente = patente;
         this.marca = marca;
@@ -36,11 +35,9 @@ public abstract class Vehiculo implements Comparable<Vehiculo>, Serializable {
         this(patente, marca, fabricacion, precio,Color.BLANCO, Condicion.NUEVO, tipo);
     }
     
-    // Métodos abstractos
     public abstract double calcularImpuesto();
     public abstract void realizarMantenimiento();
     
-    // Getters y Setters
     public String getPatente() { return patente; }
     public void setPatente(String patente) { this.patente = patente; }
     

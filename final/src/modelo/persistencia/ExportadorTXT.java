@@ -11,20 +11,27 @@ package modelo.persistencia;
 import modelo.entidades.Vehiculo;
 import java.util.List;
 import java.io.*;
-import java.util.function.Predicate;
+import modelo.entidades.Condicion;
+import modelo.entidades.Marca;
 
 public class ExportadorTXT {
     
-    public void exportarFiltrado(List<Vehiculo> vehiculos, Predicate<Vehiculo> filtro, String archivo) {
+    public void exportarFiltrado(List<Vehiculo> vehiculos, Marca filtroMarca, Condicion filtroCondicion, String archivo) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(archivo))) {
-            writer.println("=== REPORTE DE VEHÍCULOS FILTRADO ===");
-            writer.println("Generado el: " + new java.util.Date());
+            writer.println("=== REPORTE DE VEHÍCULOS ===");
+            if(filtroMarca != null){
+                writer.println("Marca: " + filtroMarca.toString());
+            }
+            if(filtroCondicion != null){
+                writer.println("Condicion: " + filtroCondicion.toString());
+            }
             writer.println("=" .repeat(50));
+
+            
             writer.println();
             
             int contador = 0;
             for (Vehiculo v : vehiculos) {
-                if (filtro.test(v)) {
                     contador++;
                     writer.println("Vehículo #" + contador);
                     writer.println("Tipo: " + v.getTipo());
@@ -36,7 +43,6 @@ public class ExportadorTXT {
                     writer.println("Impuesto: $" + String.format("%,.2f", v.calcularImpuesto()));
                     writer.println("-".repeat(30));
                     writer.println();
-                }
             }
             
             writer.println("Total de vehículos en el reporte: " + contador);

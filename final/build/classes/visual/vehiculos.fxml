@@ -43,7 +43,7 @@
             <HBox spacing="5">
                 <ComboBox fx:id="cmbFiltroCondicion" promptText="Filtrar por Condicion" />
                 <ComboBox fx:id="cmbFiltroMarca" promptText="Filtrar por Marca"/>
-                <Button text="Aplicar Filtro" onAction="#aplicarFiltro"/>
+                <Button text="Aplicar Filtro" onAction="#setFiltros"/>
                 <Button text="Limpiar Filtro" onAction="#limpiarFiltro"/>
             </HBox>
             
@@ -54,8 +54,8 @@
              <HBox spacing="5">
                 <Button text="Guardar" onAction="#serializar"/>
                 <Button text="Cargar" onAction="#deserializar"/>
-                <Button text="Exportar" onAction="#importar"/>
-                <Button text="Importar" onAction="#exportar"/>
+                <Button text="Exportar" onAction="#exportar"/>
+                <Button text="Importar" onAction="#importar"/>
             </HBox>
         </VBox>
     </HBox>
