@@ -22,16 +22,15 @@ public interface Validador {
     }
 }
 
-// Helper to parse Doubles
-public static double parseAndValidateDouble(String value, String fieldName) throws InputValidationException {
-    try {
-        if (value == null || value.trim().isEmpty()) {
-            throw new InputValidationException("El campo '" + fieldName + "' no puede estar vacío");
+    public static double parseAndValidateDouble(String value, String fieldName) throws InputValidationException {
+        try {
+            if (value == null || value.trim().isEmpty()) {
+                throw new InputValidationException("El campo '" + fieldName + "' no puede estar vacío");
+            }
+            return Double.parseDouble(value.trim());
+        } catch (NumberFormatException e) {
+            throw new InputValidationException("El campo '" + fieldName + "' debe ser un número decimal");
         }
-        return Double.parseDouble(value.trim());
-    } catch (NumberFormatException e) {
-        throw new InputValidationException("El campo '" + fieldName + "' debe ser un número decimal");
-    }
 }
 
 // Helper to validate Objects (ComboBox/DatePicker)

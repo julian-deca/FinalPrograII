@@ -32,21 +32,17 @@ public class Moto extends Vehiculo implements Serializable {
     public double calcularImpuesto() {
         return precio * 0.015;
     }
-    
   
-    
     @Override
     public void realizarMantenimiento() {
         System.out.println("Realizando mantenimiento de moto con patente " + getPatente() + ": ajuste de cadena y frenos");
     }
     
-    // Getters y Setters adicionales
     public int getCilindrada() { return cilindrada; }
     public void setCilindrada(int cilindrada) { this.cilindrada = cilindrada; }
     
     public boolean getTieneSidecar() { return tieneSidecar; }
     public void setTieneSidecar(boolean tieneSidecar) { this.tieneSidecar = tieneSidecar; }
-    
  
     
     @Override

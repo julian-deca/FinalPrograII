@@ -375,7 +375,7 @@ public class ControladorPrincipal {
         try {
             Serializador persistencia = new Serializador();
             persistencia.guardar(gestor.listarTodos(), FilePaths.getPathBinarioString());
-            mostrarAlerta("Éxito", "Datos guardados en " + FilePaths.FILE_BIN, Alert.AlertType.INFORMATION);
+            mostrarAlerta("Éxito", "Datos guardados en " + FilePaths.FILE_DAT, Alert.AlertType.INFORMATION);
             return true;
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al guardar los datos", Alert.AlertType.ERROR);

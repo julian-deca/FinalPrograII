@@ -13,10 +13,10 @@ import java.nio.file.Paths;
  */
 public interface FilePaths {
     static final String BASE = "src/resources/saved files";
-    static final String FILE_BIN = "vehiculos.bin";
+    static final String FILE_DAT = "vehiculos.dat";
     
     public static Path getPathBinario(){
-        return Paths.get(BASE,FILE_BIN);
+        return Paths.get(BASE,FILE_DAT);
     }
     
     public static String getPathBinarioString(){

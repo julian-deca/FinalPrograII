@@ -8,8 +8,6 @@ package modelo.gestion;
 import modelo.entidades.Vehiculo;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import modelo.entidades.Condicion;
 import modelo.entidades.Marca;
 import modelo.excepciones.DuplicateVehiculoException;
@@ -80,15 +78,6 @@ public class GestorVehiculos implements CRUD<Vehiculo>, Iterable<Vehiculo> {
         return new VehiculoIterator(vehiculos);
     }
     
-    // Métodos con wildcards
-    public void procesarVehiculos(List<? extends Vehiculo> listaVehiculos, Consumer<? super Vehiculo> action) {
-        listaVehiculos.forEach(action);
-    }
-    
-    public <T> List<T> transformarVehiculos(List<? extends Vehiculo> listaVehiculos, 
-                                          Function<? super Vehiculo, ? extends T> mapper) {
-        return listaVehiculos.stream().map(mapper).collect(Collectors.toList());
-    }
     
     // Ordenamiento
     public void ordenarNatural() {

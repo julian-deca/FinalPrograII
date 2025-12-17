@@ -27,16 +27,5 @@ public class Filtro {
                        .filter(v -> v.getMarca() == marca)
                        .collect(Collectors.toList());
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     // Wildcard con límite inferior
    
 }
