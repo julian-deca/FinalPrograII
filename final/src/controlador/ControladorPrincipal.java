@@ -15,7 +15,6 @@ import modelo.persistencia.PathFinder;
 import modelo.persistencia.PersistenciaCSV;
 import modelo.persistencia.ExportadorTXT;
 import modelo.excepciones.VehiculoNotFoundException;
-import modelo.excepciones.DuplicateVehiculoException;
 
 
 import javafx.fxml.FXML;
@@ -115,7 +114,7 @@ public class ControladorPrincipal {
             controlador.setEditar(editar);
             Stage newStage = new Stage();
             newStage.setTitle(editar? "Editar Vehiculo" :"Crear Vehiculo");
-            newStage.setScene(new Scene(root, 350, 600)); 
+            newStage.setScene(new Scene(root, 350, 450)); 
 
             newStage.show();
             
