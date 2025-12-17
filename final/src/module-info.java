@@ -10,7 +10,7 @@ module Final {
     requires javafx.web;
     requires jfx.incubator.input;
     requires jfx.incubator.richtext;
-    exports visual to javafx.graphics;
+    exports main to javafx.graphics;
     exports controlador to javafx.fxml;
     opens controlador to javafx.fxml;
     opens modelo.entidades to javafx.base;

@@ -1,0 +1,19 @@
+=== REPORTE DE VEHÍCULOS ===
+Marca: TOYOTA
+Condicion: NUEVO
+==================================================
+
+Vehículo #1
+Tipo: AUTO
+Patente: 
+Marca: TOYOTA
+Fabricacion: 2025-12-16
+Precio: $123,00
+Condicion: NUEVO
+Impuesto: $2,46
+Numero de Puertas: 4
+Combustible: GASOIL
+Tiene Caja Automatica: No
+------------------------------
+
+Total de vehículos en el reporte: 1

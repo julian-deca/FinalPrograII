@@ -10,11 +10,6 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.scene.Node;
-import java.io.File;
-import javafx.event.ActionEvent;
 
 public class PersistenciaCSV implements Persistencia {
     

@@ -23,6 +23,8 @@ import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import java.util.List;
+import java.util.Optional;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -118,8 +120,8 @@ public class ControladorPrincipal {
             newStage.show();
             
         } catch (IOException e) {
-            System.out.println(e);
-            mostrarAlerta("Error", "Datos inválidos: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al abrir el formulario", Alert.AlertType.ERROR);
+            System.out.println("Error al abrir el formulario: " + e.getMessage());
         }
     }
     
@@ -131,43 +133,50 @@ public class ControladorPrincipal {
    
     @FXML
     private void agregarVehiculo(ActionEvent event) {
-        try {
-            this.openNewForm();
-        } catch (DuplicateVehiculoException e) {
-            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Datos inválidos: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
+            this.openNewForm(); 
     }
     
     @FXML
     private void actualizarVehiculo(ActionEvent event) {
         try {
             vehiculoSeleccionado = seleccionTabla.getSelectedItem();
+            if(vehiculoSeleccionado == null){
+                mostrarAlerta("Atencion", "Seleccione un vehiculo para actualizar", Alert.AlertType.ERROR);
+                return;
+            }
+            
             System.out.println(vehiculoSeleccionado.getTipo());
             this.openNewForm(true);
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
-            mostrarAlerta("Error", "Datos inválidos: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Ha ocurrido un error al intentar modificar el vehiculo", Alert.AlertType.ERROR);
+            System.out.println("Error al actualizar: " + e.getMessage());
+
         }
     }
     
     @FXML
     private void eliminarVehiculo(ActionEvent event) {
 
-            try{
-                vehiculoSeleccionado = seleccionTabla.getSelectedItem();
-                if (vehiculoSeleccionado == null) {
-                    mostrarAlerta("Error", "Selceccione un vehiculo para eliminar", Alert.AlertType.ERROR);
-                    return;
-                }
-                String patente = vehiculoSeleccionado.getPatente();
-                gestor.eliminar(patente);
-                actualizarTabla();
+        try{
+            vehiculoSeleccionado = seleccionTabla.getSelectedItem();
+            if (vehiculoSeleccionado == null) {
+                mostrarAlerta("Atencion", "Selceccione un vehiculo para eliminar", Alert.AlertType.ERROR);
+                return;
+            }
+            String patente = vehiculoSeleccionado.getPatente();
+            gestor.eliminar(patente);
+            actualizarTabla();
         } catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
+            System.out.println("Error al actualizar: " + e.getMessage());
         }
+        catch (Exception e) {
+            mostrarAlerta("Error", "Ha ocurrido un error al intentar eliminar el vehiculo", Alert.AlertType.ERROR);
+            System.out.println("Error al eliminar: " + e.getMessage());
+        }
+            
     }
     
     @FXML
@@ -249,7 +258,9 @@ public class ControladorPrincipal {
             exportador.exportarFiltrado(listaFiltrada, getFiltroMarca(),getFiltroCondicion(), file.getAbsolutePath());
             mostrarAlerta("Éxito", "Datos exportados a " + file.getName(), Alert.AlertType.INFORMATION);
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al exportar: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al exportar TXT", Alert.AlertType.ERROR);
+            System.out.println("Error al exportar TXT: " + e.getMessage());
+
         }
     }
     
@@ -281,7 +292,9 @@ public class ControladorPrincipal {
            
            
          catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al cargar", Alert.AlertType.ERROR);
+            System.out.println("Error al importar: " + e.getMessage());
+
         }
     }
     
@@ -313,18 +326,16 @@ public class ControladorPrincipal {
            
            
          catch (Exception e) {
-            mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al guardar", Alert.AlertType.ERROR);
+            System.out.println("Error al exportar: " + e.getMessage());
+
         }
     }
     
     private void guardarArchivo(File file, Persistencia persistencia){
-        try {
-                persistencia.guardar(gestor.listarTodos(), file.getAbsolutePath());
-                mostrarAlerta("Éxito", "Datos guardados en " + file.getName(), Alert.AlertType.INFORMATION);
+        persistencia.guardar(gestor.listarTodos(), file.getAbsolutePath());
+        mostrarAlerta("Éxito", "Datos guardados en " + file.getName(), Alert.AlertType.INFORMATION);
            
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
     }
     
     private void cargarArchivo(File file, Persistencia persistencia){
@@ -337,7 +348,9 @@ public class ControladorPrincipal {
                 actualizarTabla();
                 mostrarAlerta("Éxito", "Datos cargados desde " + file.getName(), Alert.AlertType.INFORMATION);
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al cargar", Alert.AlertType.ERROR);
+            System.out.println("Error al cargar archivo: " + e.getMessage());
+
         }
     }
     
@@ -349,7 +362,9 @@ public class ControladorPrincipal {
             mostrarAlerta("Éxito", "Datos guardados en " + FilePaths.FILE_BIN, Alert.AlertType.INFORMATION);
             return true;
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al guardar los datos: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al guardar los datos", Alert.AlertType.ERROR);
+            System.out.println("Error al serializar: " + e.getMessage());
+
             return false;
         }
     }
@@ -373,7 +388,9 @@ public class ControladorPrincipal {
             }
             actualizarTabla();
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar los datos: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
+            System.out.println("Error al deserializar: s" + e.getMessage());
+
         }
     }
     
@@ -391,4 +408,30 @@ public class ControladorPrincipal {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+    
+    public void cerrarAplicacion(Event event, Stage stage) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Salir");
+        alert.setHeaderText("¿Guardar los cambios antes de salir?");
+
+        ButtonType btnGuardar = new ButtonType("Guardar");
+        ButtonType btnNoGuardar = new ButtonType("No Guardar");
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(btnGuardar, btnNoGuardar, btnCancelar);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent()) {
+            if (result.get() == btnGuardar) {
+                serializar(); 
+                stage.close();
+            } else if (result.get() == btnNoGuardar) {
+                stage.close();
+            } else {
+                event.consume(); 
+            }
+        }
+    }
+    
 }

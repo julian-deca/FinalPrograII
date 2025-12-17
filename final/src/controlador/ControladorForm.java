@@ -18,6 +18,10 @@ import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import modelo.excepciones.InputValidationException;
+import static modelo.validacion.Validador.parseAndValidateDouble;
+import static modelo.validacion.Validador.parseAndValidateInt;
+import static modelo.validacion.Validador.validateSelection;
 
 public class ControladorForm {
     
@@ -94,10 +98,15 @@ public class ControladorForm {
             cerrarForm(event);
             mostrarAlerta("Éxito", "Vehículo agregado correctamente", Alert.AlertType.INFORMATION);
 
-        } catch (DuplicateVehiculoException e) {
+        }
+         catch (InputValidationException e) {
+            mostrarAlerta("Atencion", e.getMessage(), Alert.AlertType.ERROR);
+        }
+        catch (DuplicateVehiculoException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
-            mostrarAlerta("Error", "Datos inválidos: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al crear vehiculo", Alert.AlertType.ERROR);
+            System.out.println("Error al crear vehiculo: " + e.getMessage());
         }
     }
     
@@ -107,9 +116,13 @@ public class ControladorForm {
             Vehiculo vehiculo = crearVehiculoDesdeFormulario();
             this.controladorPrincipal.gestor.actualizar(vehiculo);
             actualizarTabla();
-           cerrarForm(event);
+            cerrarForm(event);
             mostrarAlerta("Éxito", "Vehículo actualizado correctamente", Alert.AlertType.INFORMATION);
-        } catch (VehiculoNotFoundException e) {
+        }
+         catch (InputValidationException e) {
+            mostrarAlerta("Atencion", e.getMessage(), Alert.AlertType.ERROR);
+        }
+        catch (VehiculoNotFoundException e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
             mostrarAlerta("Error", "Datos inválidos: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -118,41 +131,47 @@ public class ControladorForm {
     
     @FXML
     private void cerrarForm(ActionEvent event){
-     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-     stage.close();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
     }
    
-    private Vehiculo crearVehiculoDesdeFormulario() {
-        String patente = txtPatente.getText();
-        Marca marca = cmbMarca.getValue();
-        Color color = cmbColor.getValue();
-        LocalDate fabricacion = datePickerFabricacion.getValue();
-        double precio = Double.parseDouble(txtPrecio.getText());
-        Condicion condicion = cmbCondicion.getValue();
+    private Vehiculo crearVehiculoDesdeFormulario() throws InputValidationException {
         Tipo tipo = cmbTipo.getValue();
+        if (tipo == null) {
+            throw new InputValidationException("Seleccione un tipo para continuar");
+        }
+        String patente = validateSelection(txtPatente.getText(),"Patente");
+        if(patente.trim().isEmpty()){
+            throw new InputValidationException("Debe ingresar una Patente");
+        }
+        Marca marca = validateSelection(cmbMarca.getValue(),"Marca");
+        Color color = validateSelection(cmbColor.getValue(),"Color");
+        LocalDate fabricacion =validateSelection(datePickerFabricacion.getValue(),"Fabricacion");
+        double precio = parseAndValidateDouble(txtPrecio.getText(),"Precio");
+        Condicion condicion = validateSelection(cmbCondicion.getValue(),"Condicion");
         
         switch (tipo) {
             case Tipo.AUTO -> {
-                int puertas = Integer.parseInt(txtPuertas.getText());
-                Combustible combustible = cmbCombustible.getValue();
+                int puertas = parseAndValidateInt(txtPuertas.getText(),"Número de Puertas");
+                Combustible combustible = validateSelection(cmbCombustible.getValue(),"Combustible");
                 boolean aire = chkCaja.isSelected();
                 return new Auto(patente, marca, fabricacion, precio,color, condicion, puertas, combustible, aire);
             }
                 
             case Tipo.CAMION -> {
-                double carga = Double.parseDouble(txtCarga.getText());
-                int ejes = Integer.parseInt(txtEjes.getText());
+                double carga = parseAndValidateDouble(txtCarga.getText(),"Capacidad de Carga");
+                int ejes = parseAndValidateInt(txtEjes.getText(), "Número de Ejes");
                 boolean refri = chkAcoplado.isSelected();
                 return new Camion(patente, marca, fabricacion, precio,color, condicion, carga, ejes, refri);
             }
                 
             case Tipo.MOTO -> {
-                int cilindrada = Integer.parseInt(txtCilindrada.getText());
-                boolean maletero = chkSidecar.isSelected();
-                return new Moto(patente, marca, fabricacion, precio,color, condicion, cilindrada, maletero);
+                int cilindrada = parseAndValidateInt(txtCilindrada.getText(),"Cilindrada");
+                boolean sideCar = chkSidecar.isSelected();
+                return new Moto(patente, marca, fabricacion, precio,color, condicion, cilindrada, sideCar);
             }
                 
-            default -> throw new IllegalArgumentException("Tipo de vehículo no válido");
+            default -> throw new InputValidationException("Tipo de vehículo no válido seleccionado.");
         }
     }
     
@@ -200,8 +219,8 @@ public class ControladorForm {
                 txtCilindrada.setText(String.valueOf(moto.getCilindrada()));
                 chkSidecar.setSelected(moto.getTieneSidecar());
             }
-            default -> {
-            }
+            default -> throw new IllegalArgumentException("Tipo de vehículo no válido");
+            
         }
 
 
