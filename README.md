@@ -69,5 +69,4 @@ Al intentar cerrar la aplicación un dialog nos pregunta si queremos guardar ant
   <img width="1003" height="308" alt="image" src="https://github.com/user-attachments/assets/5815cf9d-c2e0-4d98-92f7-59e5771a6444" />
   <br>
   <em>(vehiculos.dat)</em>
-</p>-attachments/assets/5815cf9d-c2e0-4d98-92f7-59e5771a6444" />
-(vehiculos.dat)
+
