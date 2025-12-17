@@ -40,7 +40,7 @@ public class PersistenciaJSON implements Persistencia {
             appendJsonField(json, "patente", v.getPatente(), true);
             appendJsonField(json, "marca", v.getMarca().toString(), true);
             appendJsonField(json, "fabricacion", v.getFabricacion().toString(), true);
-            appendJsonField(json, "precio", String.valueOf(v.getPrecio()), false); // Numérico, sin comillas
+            appendJsonField(json, "precio", String.valueOf(v.getPrecio()), false); 
             appendJsonField(json, "color", v.getColor().toString(), true);
             appendJsonField(json, "condicion", v.getCondicion().toString(), true);
 

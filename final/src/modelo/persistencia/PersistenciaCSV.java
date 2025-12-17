@@ -29,17 +29,23 @@ public class PersistenciaCSV implements Persistencia {
                 linea.append(v.getColor()).append(",");
                 linea.append(v.getCondicion()).append(",");
                 
-                if (v instanceof Auto auto) {
-                    linea.append("Puertas:").append(auto.getNumeroPuertas()).append(";");
-                    linea.append("Combustible:").append(auto.getCombustible()).append(";");
-                    linea.append("Caja Automatica:").append(auto.getTieneCajaAutomatica());
-                } else if (v instanceof Camion camion) {
-                    linea.append("Carga:").append(camion.getCapacidadCarga()).append(";");
-                    linea.append("Ejes:").append(camion.getNumeroEjes()).append(";");
-                    linea.append("Acoplado:").append(camion.getTieneAcoplado());
-                } else if (v instanceof Moto moto) {
-                    linea.append("Cilindrada:").append(moto.getCilindrada()).append(";");
-                    linea.append("Sidecar:").append(moto.getTieneSidecar()).append(";");
+                switch (v) {
+                    case Auto auto -> {
+                        linea.append("Puertas:").append(auto.getNumeroPuertas()).append(";");
+                        linea.append("Combustible:").append(auto.getCombustible()).append(";");
+                        linea.append("Caja Automatica:").append(auto.getTieneCajaAutomatica());
+                    }
+                    case Camion camion -> {
+                        linea.append("Carga:").append(camion.getCapacidadCarga()).append(";");
+                        linea.append("Ejes:").append(camion.getNumeroEjes()).append(";");
+                        linea.append("Acoplado:").append(camion.getTieneAcoplado());
+                    }
+                    case Moto moto -> {
+                        linea.append("Cilindrada:").append(moto.getCilindrada()).append(";");
+                        linea.append("Sidecar:").append(moto.getTieneSidecar()).append(";");
+                    }
+                    default -> {
+                    }
                 }
                 
                 writer.println(linea.toString());
