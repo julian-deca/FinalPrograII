@@ -37,7 +37,7 @@ public class Moto extends Vehiculo implements Serializable {
     
     @Override
     public void realizarMantenimiento() {
-        System.out.println("Realizando mantenimiento de moto: ajuste de cadena y frenos");
+        System.out.println("Realizando mantenimiento de moto con patente " + getPatente() + ": ajuste de cadena y frenos");
     }
     
     // Getters y Setters adicionales

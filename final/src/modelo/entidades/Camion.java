@@ -38,7 +38,7 @@ public class Camion extends Vehiculo implements VehiculoCarga, Serializable {
 
     @Override
     public void realizarMantenimiento() {
-        System.out.println("Realizando mantenimiento de camión: revisión de frenos y suspensión");
+        System.out.println("Realizando mantenimiento de camión con patente "+ getPatente() +": revisión de frenos y suspensión");
     }
     
     // Implementación de la interfaz VehiculoCarga

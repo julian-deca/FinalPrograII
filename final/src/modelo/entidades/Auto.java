@@ -40,7 +40,7 @@ public class Auto extends Vehiculo implements Serializable {
   
     @Override
     public void realizarMantenimiento() {
-        System.out.println("Realizando mantenimiento de auto: cambio de aceite y filtros");
+        System.out.println("Realizando mantenimiento de auto con patente" + getPatente() + ": cambio de aceite y filtros");
     }
     
     public int getNumeroPuertas() { return numeroPuertas; }

@@ -248,6 +248,22 @@ public class ControladorPrincipal {
     }
     
     @FXML
+    private void realizarMantenimiento(){
+       try{
+        for(Vehiculo v : gestor){
+            v.realizarMantenimiento();
+        }
+        mostrarAlerta("Éxito", "Mantenimiento realizado con éxito", Alert.AlertType.INFORMATION);
+
+       }
+       catch(Exception e){
+            mostrarAlerta("Error", "Error al realizar mantenimiento", Alert.AlertType.ERROR);
+            System.out.println("Error al realizar mantenimiento: " + e.getMessage());
+       }
+       
+    }
+    
+    @FXML
     private void exportarTXT(ActionEvent event) {
         try {
             PathFinder pathFinder = new PathFinder();

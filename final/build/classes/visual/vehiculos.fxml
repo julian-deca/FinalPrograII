@@ -49,6 +49,7 @@
             
             <HBox spacing="5">
                 <Button text="Aplicar Descuento 10%" onAction="#aplicarDescuento"/>
+                <Button text="Realizar Mantenimineto" onAction="#realizarMantenimiento"/>
                 <Button text="Exportar a TXT" onAction="#exportarTXT"/>
             </HBox>
              <HBox spacing="5">

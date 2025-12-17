@@ -6,9 +6,6 @@ package modelo.gestion;
  */
 
 import modelo.entidades.Vehiculo;
-//import excepciones.VehiculoNotFoundException;
-//import excepciones.DuplicateVehiculoException;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,7 +15,7 @@ import modelo.entidades.Marca;
 import modelo.excepciones.DuplicateVehiculoException;
 import modelo.excepciones.VehiculoNotFoundException;
 
-public class GestorVehiculos implements CRUD<Vehiculo> {
+public class GestorVehiculos implements CRUD<Vehiculo>, Iterable<Vehiculo> {
     private final List<Vehiculo> vehiculos;
     
     public GestorVehiculos() {
@@ -78,7 +75,7 @@ public class GestorVehiculos implements CRUD<Vehiculo> {
         return vehiculos.size();
     }
     
-    // Iterator personalizado
+    @Override
     public Iterator<Vehiculo> iterator() {
         return new VehiculoIterator(vehiculos);
     }
@@ -121,18 +118,10 @@ public class GestorVehiculos implements CRUD<Vehiculo> {
         return (List<Vehiculo>) Filtro.filtrarPorMarca(listVehiculos, marca);
     }
     
-    // Métodos con interfaces funcionales
+    // Método con interfaz funcional
     public void aplicarDescuento(double porcentaje) {
         Consumer<Vehiculo> descuento = v -> v.setPrecio(v.getPrecio() * (1 - porcentaje/100));
         vehiculos.forEach(descuento);
     }
     
-    public void actualizarCondicion(Condicion nuevoCondicion, Function<Vehiculo, Boolean> condicion) {
-        Consumer<Vehiculo> actualizador = v -> {
-            if (condicion.apply(v)) {
-                v.setCondicion(nuevoCondicion);
-            }
-        };
-        vehiculos.forEach(actualizador);
-    }
 }
